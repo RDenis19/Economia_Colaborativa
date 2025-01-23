@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const categoriaRoutes = require('./routes/categoria.routes');
 const rolRoutes = require('./routes/rol.routes');
+const tipoCrowdfundingRoutes = require('./routes/tipoCrowdfunding.routes');
 const userRoutes = require('./routes/usuario.routes');
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(express.json());
 //Rutas
 app.use('/categoria', categoriaRoutes);
 app.user('/rol', rolRoutes);
+app.use('/tipoCrowdfunding', tipoCrowdfundingRoutes);
 app.use('/user', userRoutes);
 
 const PORT = process.env.PORT || 3301;
