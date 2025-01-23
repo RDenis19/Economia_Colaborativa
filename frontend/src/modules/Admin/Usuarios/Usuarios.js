@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Table, Input, Button, Space, Tag, Pagination } from 'antd';
 import { EditOutlined, DeleteOutlined, EyeOutlined, PlusOutlined, FilterOutlined } from '@ant-design/icons';
-import API from '../../../utils/api';
+import { fetchUsers} from '../../../utils/api';
 
 const Usuarios = () => {
   const [data, setData] = useState([]);
@@ -13,20 +13,16 @@ const Usuarios = () => {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await API.get(`/users`, {
-        params: {
-          page: currentPage,
-          search: searchText,
-        },
-      });
-      setData(response.data.users);
-      setTotalRecords(response.data.total);
+      const response = await fetchUsers(currentPage, searchText); // Usa fetchUsers correctamente
+      setData(response); // Aquí actualizas con la respuesta
+      setTotalRecords(response.length); // El total es el tamaño de los usuarios retornados
     } catch (error) {
       console.error('Error fetching users:', error);
     } finally {
       setLoading(false);
     }
   }, [currentPage, searchText]);
+
 
   useEffect(() => {
     fetchData();
@@ -39,9 +35,14 @@ const Usuarios = () => {
       key: 'cedula',
     },
     {
-      title: 'Nombre',
-      dataIndex: 'nombre',
-      key: 'nombre',
+      title: 'Nombres',
+      dataIndex: 'nombres',
+      key: 'nombres',
+    },
+    {
+      title: 'Apellido',
+      dataIndex: 'apellido',
+      key: 'apellido',
     },
     {
       title: 'Correo Electrónico',
@@ -60,11 +61,6 @@ const Usuarios = () => {
       render: (estado) => (
         <Tag color={estado === 'Activo' ? 'green' : 'red'}>{estado}</Tag>
       ),
-    },
-    {
-      title: 'Ingresos Mensuales',
-      dataIndex: 'ingresosMensuales',
-      key: 'ingresosMensuales',
     },
     {
       title: 'Acción',
@@ -99,7 +95,7 @@ const Usuarios = () => {
         dataSource={data}
         loading={loading}
         pagination={false}
-        rowKey="cedula"
+        rowKey="id"
       />
       <Pagination
         style={{ marginTop: '20px', textAlign: 'center' }}

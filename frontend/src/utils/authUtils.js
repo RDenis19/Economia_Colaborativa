@@ -1,5 +1,9 @@
 import { jwtDecode } from "jwt-decode";
 
+export const getToken = () => {
+  return localStorage.getItem("jwt_token");
+};
+
 export const isTokenExpired = (token) => {
   if (!token) return true;
 

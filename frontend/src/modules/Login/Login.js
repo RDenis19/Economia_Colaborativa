@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Layout, Form, Input, Button, Typography, Row, Col } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import FotoLogin from "../../assets/FotoLogin.png";
+import { loginRequest } from "../../utils/api";
 import "./Login.css";
 
 const { Content } = Layout;
@@ -10,37 +10,21 @@ const { Title } = Typography;
 
 const Login = () => {
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // Hook de React Router
+  const navigate = useNavigate();
 
   const handleLogin = async (values) => {
     setError("");
     try {
-      /* const { email, password } = values;  */
+      const response = await loginRequest({
+        email: values.email,
+        contraseña: values.password,
+      });
 
-      // Simular datos del backend
-      const data = {
-        token: "fakeToken123", // Simulando un token
-        data: { rol: "Administrador" }, // Simulando un rol
-      };
+      const { token, rol } = response;
 
-      console.log("Datos simulados:", data);
-
-      // --- SECCIÓN DEL TOKEN COMENTADA ---
-      /*
-      if (!data?.token) {
-        throw new Error("Respuesta inválida del servidor.");
-      }
-
-      const { token, data: { rol } } = data;
-
-      // Guardar datos en localStorage
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("userRole", rol);
       localStorage.setItem("jwt_token", token);
-      */
-      // -----------------------------------
+      localStorage.setItem("userRole", rol);
 
-      // Rutas según el rol del usuario
       const routes = {
         Administrador: "/admin/dashboard",
         Prestamista: "/prestamista/dashboard",
@@ -48,8 +32,6 @@ const Login = () => {
         Soporte: "/soporte/dashboard",
       };
 
-      // Redirigir usando React Router
-      const rol = data.data.rol; // Simular el rol
       if (routes[rol]) {
         navigate(routes[rol]);
       } else {
@@ -57,7 +39,7 @@ const Login = () => {
       }
     } catch (err) {
       console.error("Error en el login:", err);
-      setError(err.message || "Usuario No Reconocido.");
+      setError(err.response?.mensaje || "Error al iniciar sesión.");
     }
   };
 
@@ -67,7 +49,7 @@ const Login = () => {
         <Row justify="center" align="middle" className="login-container">
           <Col xs={24} sm={12} className="login-image">
             <div className="illustration">
-              <img src={FotoLogin} alt="Innovación" className="login-illustration" />
+              <img src="../../assets/FotoLogin.png" alt="Innovación" className="login-illustration" />
               <p className="login-caption">
                 Innovación que transforma tu presente y asegura tu futuro!
               </p>
@@ -79,7 +61,7 @@ const Login = () => {
               name="login"
               layout="vertical"
               className="form"
-              onFinish={handleLogin} // Llama a handleLogin al enviar el formulario
+              onFinish={handleLogin}
             >
               <Form.Item
                 name="email"
@@ -99,7 +81,7 @@ const Login = () => {
                 />
               </Form.Item>
               <Form.Item
-                name="password"
+                name="contraseña" 
                 label="Contraseña"
                 rules={[
                   { required: true, message: "Por favor, introduce tu contraseña" },

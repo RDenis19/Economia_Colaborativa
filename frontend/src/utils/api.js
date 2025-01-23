@@ -20,23 +20,35 @@ API.interceptors.request.use(
 );
 
 // login
+
 export const loginRequest = async (credentials) => {
     try {
-        const response = await API.post('/auth/login', credentials);
-        return response.data;
+      const response = await API.post("/user/login", credentials, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      return response.data;
     } catch (error) {
-        throw error.response
-            ? error.response.data
-            : { error: 'Error en el servidor' };
+      throw error.response
+        ? error.response.data
+        : { mensaje: "Error en el servidor. Intenta nuevamente." };
     }
-};
+  };
+  
+
 
 // Usuarios
 
-export const fetchUsers = async () => {
+export const fetchUsers = async (page = 1, search = '') => {
     try {
-        const response = await API.get(`/users`);
-        return response.data;
+        const response = await API.get(`/user/`, {
+            params: {
+                page,
+                search,
+            },
+        });
+        return response.data; // Retorna los datos desde el backend
     } catch (error) {
         console.error('Error al obtener usuarios:', error);
         throw error.response
@@ -44,6 +56,7 @@ export const fetchUsers = async () => {
             : { error: 'Error en el servidor' };
     }
 };
+
 
 export default API;
 
