@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 const userRoutes = require('./routes/usuario.routes');
+const categoriaRoutes = require('./routes/categoria.routes')
 
 const app = express();
 
@@ -11,7 +12,8 @@ app.use(cors());
 app.use(express.json());
 
 //Rutas
-app.use('/user', userRoutes );
+app.use('/user', userRoutes);
+app.use('/categoria', categoriaRoutes);
 
 const PORT = process.env.PORT || 3301;
 app.listen(PORT, () => {
