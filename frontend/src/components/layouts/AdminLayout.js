@@ -17,7 +17,7 @@ function AdminLayout({ children }) {
     {
       label: "Dashboard",
       to: "/admin/dashboard",
-      icon: <HomeOutlined />,
+      icon: <HomeOutlined />, // Icono correcto
     },
     {
       label: "Usuarios",
@@ -55,8 +55,8 @@ function AdminLayout({ children }) {
             padding: 24,
             background: "#fff",
             borderRadius: "8px",
-            overflowY: "auto", 
-            height: "calc(100vh - 64px - 32px)", 
+            overflowY: "auto",
+            height: "calc(100vh - 64px)", // Ajusta la altura para evitar espacio adicional
           }}
         >
           {children}

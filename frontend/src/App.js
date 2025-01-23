@@ -31,11 +31,13 @@ import TicketsSoporte from "./modules/Soporte/TicketsSoporte/TicKets";
 
 // Layout Autenticado
 const AuthenticatedLayout = ({ children, links, onLogout }) => (
-  <>
-    <Header username="Usuario" profilePic="" />
+  <div style={{ display: "flex", height: "100vh" }}>
     <Sidebar links={links} onLogout={onLogout} />
-    <div style={{ padding: "20px" }}>{children}</div>
-  </>
+    <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+      <Header username="Usuario" profilePic="" />
+      <div style={{ padding: "20px", overflowY: "auto", flex: 1 }}>{children}</div>
+    </div>
+  </div>
 );
 
 function App() {
@@ -44,7 +46,6 @@ function App() {
   const [role, setRole] = useState("");
   const [links, setLinks] = useState([]);
 
-  // Verificar autenticación y rol al cargar la app
   useEffect(() => {
     const token = getToken();
     const userRole = localStorage.getItem("userRole");
@@ -96,10 +97,8 @@ function App() {
 
   return (
     <Routes>
-      {/* Ruta pública */}
       <Route path="/" element={<Login />} />
 
-      {/* Rutas protegidas */}
       {isAuthenticated && role === "Administrador" && (
         <Route
           path="/admin/*"
@@ -162,10 +161,8 @@ function App() {
         />
       )}
 
-      {/* Redirección para roles no reconocidos */}
       {!isAuthenticated && <Route path="*" element={<Navigate to="/" />} />}
 
-      {/* Página 404 */}
       <Route path="*" element={<h1>404 - Página no encontrada</h1>} />
     </Routes>
   );

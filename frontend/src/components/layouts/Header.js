@@ -14,6 +14,8 @@ function Header({ username, profilePic }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
+        height: "64px", // Fija la altura del encabezado
+        lineHeight: "64px",
       }}
     >
       <Row align="middle" style={{ color: "white" }}>
@@ -36,6 +38,7 @@ function Header({ username, profilePic }) {
         </Col>
       </Row>
     </AntHeader>
+
   );
 }
 
