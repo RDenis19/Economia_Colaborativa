@@ -17,16 +17,20 @@ export const isTokenExpired = (token) => {
   }
 };
 
-export const checkTokenAndRedirect = () => {
+export const checkTokenAndRedirect = (navigate, redirectPath = "/") => {
   const token = localStorage.getItem("jwt_token");
   if (!token) return false;
 
   try {
     const decoded = jwtDecode(token);
     const currentTime = Math.floor(Date.now() / 1000);
-    return decoded.exp > currentTime;
+    if (decoded.exp > currentTime) {
+      navigate(redirectPath); // Redirige si el token es válido
+      return true;
+    }
   } catch (error) {
     console.error("Error al decodificar el token:", error);
     return false;
   }
+  return false;
 };

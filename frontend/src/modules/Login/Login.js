@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import { Layout, Form, Input, Button, Typography, Row, Col } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { loginRequest } from "../../utils/api";
+import { loginRequest, fetchRoleById } from "../../utils/api";
 import "./Login.css";
 
 const { Content } = Layout;
@@ -17,13 +18,19 @@ const Login = () => {
     try {
       const response = await loginRequest({
         email: values.email,
-        contraseña: values.password,
+        contraseña: values.contraseña,
       });
 
-      const { token, rol } = response;
-
+      const { token } = response;
       localStorage.setItem("jwt_token", token);
-      localStorage.setItem("userRole", rol);
+
+      const decoded = jwtDecode(token);
+      const userId = decoded.id;
+      if (!userId) {
+        throw new Error("El ID del usuario no está disponible en el token.");
+      }
+
+      const rol = await fetchRoleById(userId);
 
       const routes = {
         Administrador: "/admin/dashboard",
@@ -32,14 +39,14 @@ const Login = () => {
         Soporte: "/soporte/dashboard",
       };
 
-      if (routes[rol]) {
-        navigate(routes[rol]);
+      if (routes[rol.nombre]) {
+        localStorage.setItem("userRole", rol.nombre);
+        navigate(routes[rol.nombre]);
       } else {
         throw new Error("Rol no reconocido.");
       }
     } catch (err) {
-      console.error("Error en el login:", err);
-      setError(err.response?.mensaje || "Error al iniciar sesión.");
+      setError(err.message || "Error al iniciar sesión.");
     }
   };
 
@@ -49,7 +56,11 @@ const Login = () => {
         <Row justify="center" align="middle" className="login-container">
           <Col xs={24} sm={12} className="login-image">
             <div className="illustration">
-              <img src="../../assets/FotoLogin.png" alt="Innovación" className="login-illustration" />
+              <img
+                src="../../assets/FotoLogin.png"
+                alt="Innovación"
+                className="login-illustration"
+              />
               <p className="login-caption">
                 Innovación que transforma tu presente y asegura tu futuro!
               </p>
@@ -81,10 +92,13 @@ const Login = () => {
                 />
               </Form.Item>
               <Form.Item
-                name="contraseña" 
+                name="contraseña"
                 label="Contraseña"
                 rules={[
-                  { required: true, message: "Por favor, introduce tu contraseña" },
+                  {
+                    required: true,
+                    message: "Por favor, introduce tu contraseña",
+                  },
                 ]}
               >
                 <Input.Password

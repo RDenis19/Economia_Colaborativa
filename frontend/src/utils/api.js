@@ -23,20 +23,33 @@ API.interceptors.request.use(
 
 export const loginRequest = async (credentials) => {
     try {
-      const response = await API.post("/user/login", credentials, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      return response.data;
+        const response = await API.post("/user/login", credentials, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return response.data;
     } catch (error) {
-      throw error.response
-        ? error.response.data
-        : { mensaje: "Error en el servidor. Intenta nuevamente." };
-    }
-  };
-  
+        // Aquí manejamos el error para devolver un objeto con 'mensaje'
+        const errorMessage = error.response && error.response.data && error.response.data.mensaje
+            ? error.response.data.mensaje
+            : "Error en el servidor. Intenta nuevamente.";
 
+        // Lanzamos un objeto Error con el mensaje
+        throw new Error(JSON.stringify({ mensaje: errorMessage }));
+    }
+};
+
+// roles
+export const fetchRoleById = async (id) => {
+    try {
+        const response = await API.get(`/rol/${id}`); // Llama a la ruta del rol
+        return response.data;
+    } catch (error) {
+        console.error("Error al obtener el rol:", error);
+        throw new Error("Error al obtener el rol. Intenta nuevamente.");
+    }
+};
 
 // Usuarios
 
@@ -48,7 +61,7 @@ export const fetchUsers = async (page = 1, search = '') => {
                 search,
             },
         });
-        return response.data; // Retorna los datos desde el backend
+        return response.data;
     } catch (error) {
         console.error('Error al obtener usuarios:', error);
         throw error.response
