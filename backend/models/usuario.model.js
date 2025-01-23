@@ -27,7 +27,7 @@ Usuario.findAll = async () => {
     `SELECT u.id, u.nombres, u.apellido, u.cedula, u.email, u.verificado, u.fecha_nacimiento, 
             u.fecha_registro, u.fecha_verificacion, u.usuarioscol, u.estado, r.nombre AS rol
      FROM usuarios u
-     JOIN roles r ON u.rol_id = r.id`
+     JOIN roles r ON u.roles_id = r.id`
   );
   return rows;
 };
@@ -38,7 +38,7 @@ Usuario.findById = async (id) => {
     `SELECT u.id, u.nombres, u.apellido, u.cedula, u.email, u.verificado, u.fecha_nacimiento, 
             u.fecha_registro, u.fecha_verificacion, u.usuarioscol, u.estado, r.nombre AS rol
      FROM usuarios u
-     JOIN roles r ON u.rol_id = r.id
+     JOIN roles r ON u.roles_id = r.id
      WHERE u.id = ?`,
     [id]
   );

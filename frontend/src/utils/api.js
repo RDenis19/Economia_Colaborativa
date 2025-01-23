@@ -70,8 +70,62 @@ export const fetchUsers = async (page = 1, search = '') => {
     }
 };
 
+//  Registrar Usuario
+export const registerUser = async (userData) => {
+    try {
+        const response = await API.post('/user/registro', userData);
+        return response.data;
+    } catch (error) {
+        console.error('Error al registrar usuario:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
 
-export default API;
+// visualizar Perfil de un Usuario
+export const fetchUserById = async (id) => {
+    try {
+        const response = await API.get(`/user/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener usuario por ID:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
+
+// Eliminar Usuario
+export const deleteUserById = async (id) => {
+    try {
+        const response = await API.delete(`/user/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error al eliminar usuario:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
+
+// Actualizar usuario
+export const updateUserById = async (id, userData) => {
+    try {
+        const response = await API.put(`/user/${id}`, userData);
+        return response.data;
+    } catch (error) {
+        console.error('Error al actualizar usuario:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
+
+// Rol
+
+// Actualizar un rol
+export const updateRoleById = async (id, roleData) => {
+    try {
+        const response = await API.put(`/rol/${id}`, roleData);
+        return response.data;
+    } catch (error) {
+        console.error('Error al actualizar rol:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
 
 // Proyectos
 export const fetchProjects = async () => {
@@ -113,3 +167,4 @@ export const fetchInvestments = async () => {
 };
 
 
+export default API;
