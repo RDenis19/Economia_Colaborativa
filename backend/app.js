@@ -15,7 +15,7 @@ app.use(express.json());
 
 //Rutas
 app.use('/categoria', categoriaRoutes);
-app.user('/rol', rolRoutes);
+app.use('/rol', rolRoutes);
 app.use('/tipoCrowdfunding', tipoCrowdfundingRoutes);
 app.use('/user', userRoutes);
 

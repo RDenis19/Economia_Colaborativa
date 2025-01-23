@@ -31,6 +31,6 @@ router.put(
   tipoCrowdfundingController.updateTipoCrowdfunding
 );
 
-router.delete('/:id', authMiddleware, roleMiddleware('Administrador'), tipoCrowdfundingController.deleteTipoCrowdfunding);
+router.delete('/:id', authMiddleware, tipoCrowdfundingController.deleteTipoCrowdfunding);
 
 module.exports = router;
