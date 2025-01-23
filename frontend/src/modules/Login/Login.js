@@ -5,6 +5,8 @@ import { Layout, Form, Input, Button, Typography, Row, Col } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { loginRequest, fetchRoleById } from "../../utils/api";
 import "./Login.css";
+import FotoLogin from "../../assets/FotoLogin.png";
+
 
 const { Content } = Layout;
 const { Title } = Typography;
@@ -57,7 +59,7 @@ const Login = () => {
           <Col xs={24} sm={12} className="login-image">
             <div className="illustration">
               <img
-                src="../../assets/FotoLogin.png"
+                src={FotoLogin}
                 alt="Innovación"
                 className="login-illustration"
               />
@@ -122,3 +124,6 @@ const Login = () => {
 };
 
 export default Login;
+
+
+
