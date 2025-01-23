@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Routes, Route } from "react-router-dom";
-import { isTokenExpired } from "./utils/authUtils";
+/* import { isTokenExpired } from "./utils/authUtils"; */
 
 // Componentes generales
 import Sidebar from "./components/layouts/Sidebar";
@@ -41,41 +41,43 @@ function App() {
   const [links, setLinks] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem("jwt_token");
-    const role = localStorage.getItem("userRole");
+    // Comentado para desarrollo
+    // const token = localStorage.getItem("jwt_token");
+    // const role = localStorage.getItem("userRole");
 
-    if (!token || isTokenExpired(token)) {
-      localStorage.clear();
-      setIsAuthenticated(false);
-      navigate("/");
-    } else {
-      setIsAuthenticated(true);
-      const roleLinks = {
-        Admin: [
-          { to: "/admin/dashboard", label: "Dashboard" },
-          { to: "/admin/usuarios", label: "Usuarios" },
-          { to: "/admin/proyectos", label: "Proyectos" },
-          { to: "/admin/tickets", label: "Tickets" },
-          { to: "/admin/inversiones", label: "Inversiones" },
-        ],
-        Prestamista: [
-          { to: "/prestamista/dashboard", label: "Dashboard" },
-          { to: "/prestamista/seguimiento", label: "Seguimiento" },
-          { to: "/prestamista/proyectos", label: "Proyectos" },
-        ],
-        Prestatario: [
-          { to: "/prestatario/dashboard", label: "Dashboard" },
-          { to: "/prestatario/seguimiento", label: "Seguimiento" },
-          { to: "/prestatario/proyectos", label: "Proyectos" },
-        ],
-        Soporte: [
-          { to: "/soporte/dashboard", label: "Dashboard" },
-          { to: "/soporte/proyectos", label: "Proyectos" },
-          { to: "/soporte/tickets", label: "Tickets" },
-        ],
-      };
-      setLinks(roleLinks[role] || []);
-    }
+    // if (!token || isTokenExpired(token)) {
+    //   localStorage.clear();
+    //   setIsAuthenticated(false);
+    //   navigate("/");
+    // } else {
+    setIsAuthenticated(true);
+    const role = "Admin"; // Configuración temporal para pruebas
+    const roleLinks = {
+      Admin: [
+        { to: "/admin/dashboard", label: "Dashboard" },
+        { to: "/admin/usuarios", label: "Usuarios" },
+        { to: "/admin/proyectos", label: "Proyectos" },
+        { to: "/admin/tickets", label: "Tickets" },
+        { to: "/admin/inversiones", label: "Inversiones" },
+      ],
+      Prestamista: [
+        { to: "/prestamista/dashboard", label: "Dashboard" },
+        { to: "/prestamista/seguimiento", label: "Seguimiento" },
+        { to: "/prestamista/proyectos", label: "Proyectos" },
+      ],
+      Prestatario: [
+        { to: "/prestatario/dashboard", label: "Dashboard" },
+        { to: "/prestatario/seguimiento", label: "Seguimiento" },
+        { to: "/prestatario/proyectos", label: "Proyectos" },
+      ],
+      Soporte: [
+        { to: "/soporte/dashboard", label: "Dashboard" },
+        { to: "/soporte/proyectos", label: "Proyectos" },
+        { to: "/soporte/tickets", label: "Tickets" },
+      ],
+    };
+    setLinks(roleLinks[role] || []);
+    // }
   }, [navigate]);
 
   const handleLogout = () => {
