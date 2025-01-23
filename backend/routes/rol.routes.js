@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const rolController = require('../controllers/rolController');
-const authMiddleware = require('../middlewares/authMiddleware');
+const rolController = require('../controllers/rol.controller');
+const authMiddleware = require('../middleware/authMiddleware');
 
 // Rutas públicas
 router.get('/', rolController.getRoles);
