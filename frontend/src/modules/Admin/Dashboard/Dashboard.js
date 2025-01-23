@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Row, Col, Table, Typography} from "antd";
+import { Card, Row, Col, Table} from "antd";
 import {
   LineChart,
   Line,
@@ -93,9 +93,7 @@ const Dashboard = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <Typography.Title level={2} style={{ marginBottom: "20px" }}>
-        Dashboard
-      </Typography.Title>
+      
       <Row gutter={16}>
         <Col span={12}>
           <Card title="Nuevos Usuarios" bordered={false}>
