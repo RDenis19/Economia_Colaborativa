@@ -8,7 +8,7 @@ const API = axios.create({
 
 API.interceptors.request.use(
     (config) => {
-        if (!config.url.includes('/auth/login')) {
+        if (!config.url.includes('/auth/')) {
             const token = localStorage.getItem('jwt_token');
             if (token && !isTokenExpired(token)) {
                 config.headers['Authorization'] = `Bearer ${token}`;

@@ -6,7 +6,7 @@ const Usuario = {};
 // Buscar usuario por correo electrónico
 Usuario.findByEmail = async (email) => {
     const [rows] = await pool.query('SELECT * FROM usuario WHERE correo = ?', [email]);
-    return rows[0]; // Devuelve el primer resultado o null si no hay resultados
+    return rows[0]; 
 };
 
 // Verificar contraseña (login)

@@ -6,13 +6,13 @@ require('dotenv').config();
 // Iniciar sesión
 exports.iniciarSesion = async (req, res) => {
     try {
-        const { email, contraseña } = req.body;
+        const { correo, contraseña } = req.body;
 
-        if (!email || !contraseña) {
-            return res.status(400).json({ mensaje: 'Por favor, ingresa tu email y contraseña.' });
+        if (!correo || !contraseña) {
+            return res.status(400).json({ mensaje: 'Por favor, ingresa tu correo y contraseña.' });
         }
 
-        const usuario = await Usuario.findByEmail(email);
+        const usuario = await Usuario.findByEmail(correo);
         if (!usuario) {
             return res.status(400).json({ mensaje: 'Credenciales inválidas.' });
         }
