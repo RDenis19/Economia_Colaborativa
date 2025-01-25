@@ -172,11 +172,11 @@ VALUES
 
 -- 17) TICKET_MENSAJES
 INSERT INTO `ticket_mensajes`
-  (id_mensaje, id_ticket, id_usuario, mensaje)
+  (id_ticket, id_usuario, mensaje)
 VALUES
-(1,1,3,'Hola, no veo mis aportes.'),
-(2,1,2,'Revisaré tus transacciones.'),
-(3,2,4,'¿Cómo patrocino el proyecto adecuadamente?');
+(1,3,'Hola, no veo mis aportes.'),
+(1,2,'Revisaré tus transacciones.'),
+(2,4,'¿Cómo patrocino el proyecto adecuadamente?');
 
 -- 18) NOTIFICACIONES (Principal)
 INSERT INTO `notificaciones`

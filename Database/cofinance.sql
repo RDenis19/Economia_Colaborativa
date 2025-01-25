@@ -370,7 +370,7 @@ ENGINE = InnoDB;
 -- Table `cofinance`.`ticket_mensajes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `cofinance`.`ticket_mensajes` (
-  `id_mensaje` INT NOT NULL,
+  `id_mensaje` INT NOT NULL AUTO_INCREMENT,
   `id_ticket` INT NOT NULL,
   `id_usuario` INT NOT NULL,
   `mensaje` TEXT NOT NULL,
