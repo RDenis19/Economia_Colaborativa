@@ -9,17 +9,14 @@ USE `cofinance`;
 
 -- 1) ROLES (Administrador, Soporte, Creador, Patrocinador, Donante, Inversor)
 -- Asegúrate de tener la columna 'descripcion' en la tabla 'roles'.
-ALTER TABLE `roles`
-ADD COLUMN IF NOT EXISTS `descripcion` VARCHAR(255) NOT NULL DEFAULT '' AFTER `nombre_rol`;
-
-INSERT INTO `roles` (nombre_rol, descripcion)
+INSERT INTO `roles` (nombre_rol)
 VALUES
-('Administrador', 'Administradores de la plataforma'),
-('Soporte', 'Verificar documentos de usuario y proyectos, dar soporte a usuarios'),
-('Creador', 'Usuarios que crean proyectos'),
-('Patrocinador', 'Usuarios que patrocinan proyectos de recompensas'),
-('Donante', 'Usuarios que realizan donaciones'),
-('Inversor', 'Usuarios que invierten en crowdlending y equity crowdfunding');
+('Administrador'),
+('Soporte'),
+('Creador'),
+('Patrocinador'),
+('Donante'),
+('Inversor');
 
 -- 2) USUARIOS
 INSERT INTO `usuario` (usuario, correo, contraseña)
