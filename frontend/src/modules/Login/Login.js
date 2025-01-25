@@ -3,10 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { Layout, Form, Input, Button, Typography, Row, Col } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import { loginRequest, fetchRoleById } from "../../utils/api";
+import { loginRequest } from "../../utils/api";
 import "./Login.css";
 import FotoLogin from "../../assets/FotoLogin.png";
-
 
 const { Content } = Layout;
 const { Title } = Typography;
@@ -15,40 +14,47 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // Objeto que define las rutas según los roles
+  const routes = {
+    Administrador: "/admin/dashboard",
+    Prestamista: "/prestamista/dashboard",
+    Prestatario: "/prestatario/dashboard",
+    Soporte: "/soporte/dashboard",
+  };
+
   const handleLogin = async (values) => {
     setError("");
     try {
       const response = await loginRequest({
-        email: values.email,
-        contraseña: values.contraseña,
+        correo: values.email,
+        contraseña: values.contraseña, // El backend espera "contraseña"
       });
 
+      // Guardar el token en localStorage
       const { token } = response;
       localStorage.setItem("jwt_token", token);
 
+      // Decodificar el token para obtener el rol del usuario
       const decoded = jwtDecode(token);
-      const userId = decoded.id;
-      if (!userId) {
-        throw new Error("El ID del usuario no está disponible en el token.");
-      }
+      const userRole = decoded.rol; // Obtenemos el rol del usuario desde el token
 
-      const rol = await fetchRoleById(userId);
+      console.log("Rol decodificado desde el token:", userRole);
 
-      const routes = {
-        Administrador: "/admin/dashboard",
-        Prestamista: "/prestamista/dashboard",
-        Prestatario: "/prestatario/dashboard",
-        Soporte: "/soporte/dashboard",
-      };
-
-      if (routes[rol.nombre]) {
-        localStorage.setItem("userRole", rol.nombre);
-        navigate(routes[rol.nombre]);
+      // Verificar si el rol tiene una ruta asignada
+      if (routes[userRole]) {
+        localStorage.setItem("userRole", userRole); // Guardar rol en localStorage
+        navigate(routes[userRole]); // Redirigir al usuario a su dashboard
       } else {
         throw new Error("Rol no reconocido.");
       }
     } catch (err) {
-      setError(err.message || "Error al iniciar sesión.");
+      // Manejo de errores: Mostrar mensaje del backend o error genérico
+      try {
+        const parsedError = JSON.parse(err.message);
+        setError(parsedError.mensaje || "Error desconocido al iniciar sesión.");
+      } catch (parseError) {
+        setError(err.message || "Error desconocido.");
+      }
     }
   };
 
@@ -64,7 +70,7 @@ const Login = () => {
                 className="login-illustration"
               />
               <p className="login-caption">
-                Innovación que transforma tu presente y asegura tu futuro!
+                Innovación que transforma tu presente y asegura tu futuro.
               </p>
             </div>
           </Col>
@@ -124,6 +130,3 @@ const Login = () => {
 };
 
 export default Login;
-
-
-

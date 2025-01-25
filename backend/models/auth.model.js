@@ -1,11 +1,15 @@
 const pool = require('../config/db');
-const bcrypt = require('bcryptjs');
 
 const Usuario = {};
 
-// Buscar usuario por correo electrónico
+// Buscar usuario por correo y obtener su rol
 Usuario.findByEmail = async (email) => {
-    const [rows] = await pool.query('SELECT * FROM usuario WHERE correo = ?', [email]);
+    const [rows] = await pool.query(`
+        SELECT u.*, ur.id_rol AS rol_id
+        FROM usuario u
+        LEFT JOIN usuario_roles ur ON u.idusuario = ur.id_usuario
+        WHERE u.correo = ?
+    `, [email]);
     return rows[0];
 };
 

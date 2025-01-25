@@ -20,30 +20,27 @@ API.interceptors.request.use(
 );
 
 // login
-
-export const loginRequest = async (credentials) => {
+export const loginRequest = async (credenciales) => {
     try {
-        const response = await API.post("/user/login", credentials, {
+        const response = await API.post("/auth/login", credenciales,{
             headers: {
                 "Content-Type": "application/json",
             },
         });
+        console.log(response);
         return response.data;
     } catch (error) {
-        // Aquí manejamos el error para devolver un objeto con 'mensaje'
-        const errorMessage = error.response && error.response.data && error.response.data.mensaje
-            ? error.response.data.mensaje
-            : "Error en el servidor. Intenta nuevamente.";
-
-        // Lanzamos un objeto Error con el mensaje
+        console.log(error);
+        const errorMessage = error.response?.data?.mensaje || "Error en el servidor. Intenta nuevamente.";
         throw new Error(JSON.stringify({ mensaje: errorMessage }));
     }
 };
 
+
 // roles
 export const fetchRoleById = async (id) => {
     try {
-        const response = await API.get(`/rol/${id}`); // Llama a la ruta del rol
+        const response = await API.get(`/roles/${id}`); 
         return response.data;
     } catch (error) {
         console.error("Error al obtener el rol:", error);
