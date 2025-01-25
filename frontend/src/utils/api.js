@@ -20,20 +20,29 @@ API.interceptors.request.use(
 );
 
 // login
+// Función para login
 export const loginRequest = async (credenciales) => {
-    try {
-        const response = await API.post("/auth/login", credenciales,{
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        console.log(response);
-        return response.data;
-    } catch (error) {
-        console.log(error);
-        const errorMessage = error.response?.data?.mensaje || "Error en el servidor. Intenta nuevamente.";
-        throw new Error(JSON.stringify({ mensaje: errorMessage }));
-    }
+  try {
+    // Crear credenciales con la contraseña encriptada
+    const encryptedCredenciales = {
+      correo: credenciales.correo,
+      contraseña: credenciales.contraseña,
+    };
+
+    const response = await API.post("/auth/login", encryptedCredenciales, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log("Login exitoso:", response.data);
+    return response.data; // Devuelve el token y otros datos relevantes
+  } catch (error) {
+    console.error("Error en login:", error);
+    const errorMessage =
+      error.response?.data?.mensaje || "Error en el servidor. Intenta nuevamente.";
+    throw new Error(JSON.stringify({ mensaje: errorMessage }));
+  }
 };
 
 
