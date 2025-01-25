@@ -1,20 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const proyectoVerificacionController = require('../controller/proyecto_verificacion.controller');
+const authMiddleware = require('../middleware/authMiddleware');
 
 // Ruta para obtener todas las verificaciones de proyectos
-router.get('/', proyectoVerificacionController.getAll);
+router.get('/', authMiddleware, proyectoVerificacionController.getAll);
 
 // Ruta para obtener una verificación de proyecto por su ID
-router.get('/:id', proyectoVerificacionController.getById);
+router.get('/:id', authMiddleware, proyectoVerificacionController.getById);
 
 // Ruta para crear una nueva verificación de proyecto
-router.post('/', proyectoVerificacionController.create);
+router.post('/', authMiddleware, proyectoVerificacionController.create);
 
 // Ruta para actualizar una verificación de proyecto
-router.put('/:id', proyectoVerificacionController.update);
+router.put('/:id', authMiddleware, proyectoVerificacionController.update);
 
 // Ruta para eliminar una verificación de proyecto
-router.delete('/:id', proyectoVerificacionController.delete);
+router.delete('/:id', authMiddleware, proyectoVerificacionController.delete);
 
 module.exports = router;

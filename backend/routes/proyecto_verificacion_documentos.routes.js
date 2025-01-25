@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const proyectoVerificacionDocumentosController = require('../controller/proyecto_verificacion_documentos.controller');
+const authMiddleware = require('../middleware/authMiddleware');
 
 // Ruta para obtener documentos por ID de verificación de proyecto
-router.get('/:id', proyectoVerificacionDocumentosController.getByVerificationId);
+router.get('/:id', authMiddleware, proyectoVerificacionDocumentosController.getByVerificationId);
 
 // Ruta para crear un nuevo documento de verificación de proyecto
-router.post('/', proyectoVerificacionDocumentosController.create);
+router.post('/', authMiddleware, proyectoVerificacionDocumentosController.create);
 
 // Ruta para eliminar un documento de verificación de proyecto
-router.delete('/:id', proyectoVerificacionDocumentosController.delete);
+router.delete('/:id', authMiddleware, proyectoVerificacionDocumentosController.delete);
 
 module.exports = router;
