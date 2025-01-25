@@ -391,6 +391,44 @@ CREATE TABLE IF NOT EXISTS `cofinance`.`ticket_mensajes` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `cofinance`.`notificaciones`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `cofinance`.`notificaciones` (
+  `id_notificacion` INT NOT NULL AUTO_INCREMENT,
+  `tipo_origen` ENUM('proyecto', 'proyecto_contribuciones', 'proyecto_verificacion', 'documentos_verificacion', 'usuario_verificacion', 'tickets', 'ticket_mensajes', 'otro') NOT NULL,
+  `id_origen` INT NOT NULL,
+  `titulo` VARCHAR(100) NULL,
+  `mensaje` TEXT NOT NULL,
+  `fecha_creacion` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `tipo_notificacion` ENUM('Automatica', 'Manual') NOT NULL DEFAULT 'Automatica',
+  PRIMARY KEY (`id_notificacion`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `cofinance`.`notificaciones_usuarios`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `cofinance`.`notificaciones_usuarios` (
+  `id_notificacion` INT NOT NULL,
+  `id_usuario` INT NOT NULL,
+  `leido` TINYINT(1) NOT NULL DEFAULT 0,
+  `fecha_lectura` DATETIME NULL,
+  PRIMARY KEY (`id_notificacion`, `id_usuario`),
+  INDEX `fk_notificaciones_usuarios_usuario_idx` (`id_usuario` ASC) VISIBLE,
+  CONSTRAINT `fk_notificaciones_usuarios_notificacion`
+    FOREIGN KEY (`id_notificacion`)
+    REFERENCES `cofinance`.`notificaciones` (`id_notificacion`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_notificaciones_usuarios_usuario`
+    FOREIGN KEY (`id_usuario`)
+    REFERENCES `cofinance`.`usuario` (`idusuario`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
