@@ -6,10 +6,10 @@ const Usuario = {};
 // Buscar usuario por correo electrónico
 Usuario.findByEmail = async (email) => {
     const [rows] = await pool.query('SELECT * FROM usuario WHERE correo = ?', [email]);
-    return rows[0]; 
+    return rows[0];
 };
 
-// Verificar contraseña (login)
+// Verificar contraseña
 Usuario.verifyPassword = async (inputPassword, storedPassword) => {
     return await bcrypt.compare(inputPassword, storedPassword);
 };
