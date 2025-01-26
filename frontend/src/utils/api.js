@@ -22,34 +22,34 @@ API.interceptors.request.use(
 // login
 // Función para login
 export const loginRequest = async (credenciales) => {
-  try {
-    // Crear credenciales con la contraseña encriptada
-    const encryptedCredenciales = {
-      correo: credenciales.correo,
-      contraseña: credenciales.contraseña,
-    };
+    try {
+        // Crear credenciales con la contraseña encriptada
+        const encryptedCredenciales = {
+            correo: credenciales.correo,
+            contraseña: credenciales.contraseña,
+        };
 
-    const response = await API.post("/auth/login", encryptedCredenciales, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+        const response = await API.post("/auth/login", encryptedCredenciales, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
 
-    console.log("Login exitoso:", response.data);
-    return response.data; // Devuelve el token y otros datos relevantes
-  } catch (error) {
-    console.error("Error en login:", error);
-    const errorMessage =
-      error.response?.data?.mensaje || "Error en el servidor. Intenta nuevamente.";
-    throw new Error(JSON.stringify({ mensaje: errorMessage }));
-  }
+        console.log("Login exitoso:", response.data);
+        return response.data; // Devuelve el token y otros datos relevantes
+    } catch (error) {
+        console.error("Error en login:", error);
+        const errorMessage =
+            error.response?.data?.mensaje || "Error en el servidor. Intenta nuevamente.";
+        throw new Error(JSON.stringify({ mensaje: errorMessage }));
+    }
 };
 
 
 // roles
 export const fetchRoleById = async (id) => {
     try {
-        const response = await API.get(`/roles/${id}`); 
+        const response = await API.get(`/roles/${id}`);
         return response.data;
     } catch (error) {
         console.error("Error al obtener el rol:", error);
@@ -59,20 +59,13 @@ export const fetchRoleById = async (id) => {
 
 // Usuarios
 
-export const fetchUsers = async (page = 1, search = '') => {
+export const fetchUsers = async () => {
     try {
-        const response = await API.get(`/user/`, {
-            params: {
-                page,
-                search,
-            },
-        });
+        const response = await API.get('/usuarios/'); // Esto se refiere a /usuarios en el backend
         return response.data;
     } catch (error) {
         console.error('Error al obtener usuarios:', error);
-        throw error.response
-            ? error.response.data
-            : { error: 'Error en el servidor' };
+        throw error.response ? error.response.data : { error: 'Error en el servidor' };
     }
 };
 
@@ -136,13 +129,11 @@ export const updateRoleById = async (id, roleData) => {
 // Proyectos
 export const fetchProjects = async () => {
     try {
-        const response = await API.get(`/projects`);
+        const response = await API.get('/proyectos/');
         return response.data;
     } catch (error) {
         console.error('Error al obtener proyectos:', error);
-        throw error.response
-            ? error.response.data
-            : { error: 'Error en el servidor' };
+        throw error.response ? error.response.data : { error: 'Error en el servidor' };
     }
 };
 

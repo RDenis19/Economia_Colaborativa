@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
 import { Layout } from "antd";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Sidebar from "../components/Sidebar"; // Componente de la barra lateral
-import Header from "../components/Header";   // Componente del encabezado
+import Sidebar from "../components/Sidebar"; 
+import Header from "../components/Header";   
 import { AuthContext } from "../auth/AuthContext";
 import { Permissions } from "../auth/Permissions";
 
@@ -23,11 +23,14 @@ const MainView = () => {
 
   // Obtener módulos según los permisos del rol
   const userModules = roles
-    .flatMap((role) => Permissions[role] || []) // Obtener permisos según el rol
-    .filter((mod, index, self) => 
-      self.findIndex((m) => m.name === mod.name) === index
-    ); // Evitar duplicados
-
+  .flatMap((role) => Permissions[role] || []) // Obtener permisos según el rol
+  .filter((mod, index, self) => 
+    self.findIndex((m) => m.name === mod.name) === index
+  ); 
+  
+  console.log("Roles actuales:", roles);
+  console.log("Módulos disponibles:", userModules);
+  
   const handleLogout = () => {
     localStorage.removeItem("jwt_token"); // Eliminar el token del almacenamiento local
     window.location.href = "/"; // Redirigir al login

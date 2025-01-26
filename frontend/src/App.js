@@ -7,16 +7,27 @@ import { AuthContext } from "./auth/AuthContext";
 const App = () => {
   const { roles } = useContext(AuthContext);
 
+  // Función para generar las rutas protegidas
+  const renderProtectedRoutes = () => {
+    if (roles.length === 0) {
+      // Si no hay roles, redirige al login
+      return <Route path="*" element={<Navigate to="/" />} />;
+    }
+
+    // Renderiza la vista principal (MainView) para cualquier usuario con roles
+    return <Route path="/*" element={<MainView />} />;
+  };
+
   return (
     <Routes>
+      {/* Ruta pública para el Login */}
       <Route path="/" element={<Login />} />
-      {roles.length > 0 ? (
-        <Route path="/*" element={<MainView />} />
-      ) : (
-        <Route path="*" element={<Navigate to="/" />} />
-      )}
+
+      {/* Llamada a la función que genera las rutas protegidas */}
+      {renderProtectedRoutes()}
     </Routes>
   );
 };
 
 export default App;
+

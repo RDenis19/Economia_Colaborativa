@@ -12,7 +12,7 @@ const { Content } = Layout;
 const { Title } = Typography;
 
 const Login = () => {
-  const { setRoles } = useContext(AuthContext);
+  const { setRoles } = useContext(AuthContext); // Obtener setRoles del contexto
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -23,20 +23,30 @@ const Login = () => {
         correo: values.email,
         contraseña: values.contraseña,
       });
-  
+
       const { token } = response;
       localStorage.setItem("jwt_token", token);
-  
-      // Decodifica el token y extrae roles
+
       const decoded = jwtDecode(token);
-      const userRoles = decoded.rol_id ? [decoded.rol_id] : []; // Asegúrate de que el backend envíe `rol_id`
-  
-      setRoles(userRoles); // Configura roles en el contexto
-      navigate("/dashboard"); // Redirige a MainView
+      console.log("Token decodificado:", decoded);
+
+      const roleMap = {
+        1: "administrador",
+        2: "creador",
+        3: "usuario",
+        4: "soporte",
+      };
+
+      const userRoles = decoded.rol_id ? [roleMap[decoded.rol_id]] : [];
+      console.log("Roles configurados:", userRoles);
+
+      setRoles(userRoles); // Configura roles en el contexto global
+      navigate("/dashboard"); // Redirigir al dashboard
     } catch (err) {
       setError("Error al iniciar sesión. Verifica tus credenciales.");
     }
   };
+
   
   return (
     <Layout className="login-layout">

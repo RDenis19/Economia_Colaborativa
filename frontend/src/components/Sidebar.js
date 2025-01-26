@@ -19,6 +19,9 @@ function Sidebar({ links = [], onLogout }) {
     setCollapsed(!collapsed);
   };
 
+  // Depurar los enlaces recibidos
+  console.log("Enlaces de la barra lateral:", links);
+
   // Definir iconos para los módulos
   const iconMap = {
     Dashboard: <HomeOutlined />,
