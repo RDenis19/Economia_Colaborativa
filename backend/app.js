@@ -2,8 +2,11 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+
+
 const authRoutes = require('./routes/auth.routes.js');
 const userRoutes = require('./routes/usuario.routes.js');
+const usuarioCompletoRoutes = require('./routes/usuarioCompleto.routes.js');
 const personalInfoRoutes = require('./routes/informacion_personal.routes.js');
 const contactInfoRoutes = require('./routes/informacion_contacto.routes.js');
 const financialInfoRoutes = require('./routes/informacion_financiera.routes.js');
@@ -30,6 +33,7 @@ app.use(express.json());
 
 app.use('/auth', authRoutes);
 app.use('/usuarios', userRoutes);
+app.use('/usuario-completo', usuarioCompletoRoutes);
 app.use('/informacion-personal', personalInfoRoutes);
 app.use('/informacion-contacto', contactInfoRoutes);
 app.use('/informacion-financiera', financialInfoRoutes);

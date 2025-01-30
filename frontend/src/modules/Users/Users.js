@@ -3,6 +3,7 @@ import { Table, Button, Input, Space, Tooltip, message } from 'antd';
 import { SearchOutlined, PlusOutlined, EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import { fetchUsers, deleteUserById } from '../../utils/api';
 import AddUsuario from './AddUsuario';
+import dayjs from 'dayjs'; // Importamos dayjs
 
 const Usuario = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -28,11 +29,6 @@ const Usuario = () => {
     }
   };
 
-  const handleSearch = (e) => {
-    setSearchText(e.target.value);
-    setCurrentPage(1);
-  };
-
   const handleDelete = async (id) => {
     try {
       await deleteUserById(id);
@@ -41,6 +37,10 @@ const Usuario = () => {
     } catch (error) {
       message.error('Error al eliminar usuario.');
     }
+  };
+
+  const formatDate = (dateString) => {
+    return dayjs(dateString).format('YYYY-MM-DD HH:mm:ss'); // Formato correcto
   };
 
   const usuariosFiltrados = usuarios
@@ -57,7 +57,7 @@ const Usuario = () => {
           placeholder="Buscar por usuario"
           prefix={<SearchOutlined />}
           value={searchText}
-          onChange={handleSearch}
+          onChange={(e) => setSearchText(e.target.value)}
           style={{ width: '300px' }}
         />
         <Button type="primary" icon={<PlusOutlined />} onClick={() => setShowAddUserModal(true)}>
@@ -69,7 +69,13 @@ const Usuario = () => {
         columns={[
           { title: 'Usuario', dataIndex: 'usuario', key: 'usuario' },
           { title: 'Correo', dataIndex: 'correo', key: 'correo' },
-          { title: 'Fecha de Registro', dataIndex: 'fecha_registro', key: 'fecha_registro' },
+          { title: 'Rol', dataIndex: 'nombre_rol', key: 'nombre_rol' },
+          { 
+            title: 'Fecha de Registro', 
+            dataIndex: 'fecha_registro', 
+            key: 'fecha_registro',
+            render: (text) => formatDate(text) // Se aplica el formato de fecha con dayjs
+          },
           {
             title: 'Acción',
             key: 'accion',

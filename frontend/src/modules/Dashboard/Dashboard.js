@@ -1,7 +1,6 @@
 import React from "react";
 import { Card, Row, Col, Statistic, Table, Tag, Button } from "antd";
-import { Line } from "@ant-design/charts";
-import { Pie } from "@ant-design/plots";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 import { UserOutlined, DollarOutlined } from "@ant-design/icons";
 
 const Dashboard = () => {
@@ -11,30 +10,22 @@ const Dashboard = () => {
     { title: "Número de Proyectos", value: "$25,000", icon: <UserOutlined /> },
   ];
 
-  const lineConfig = {
-    data: [
-      { month: "Ene", value: 12000, category: "Mes Pasado" },
-      { month: "Feb", value: 15000, category: "Mes Pasado" },
-      { month: "Mar", value: 14000, category: "Mes Pasado" },
-      { month: "Ene", value: 18000, category: "Mes Actual" },
-      { month: "Feb", value: 17000, category: "Mes Actual" },
-      { month: "Mar", value: 21000, category: "Mes Actual" },
-    ],
-    xField: "month",
-    yField: "value",
-    seriesField: "category",
-    smooth: true,
-  };
+  // Datos para la gráfica de líneas
+  const lineData = [
+    { month: "Ene", "Mes Pasado": 12000, "Mes Actual": 18000 },
+    { month: "Feb", "Mes Pasado": 15000, "Mes Actual": 17000 },
+    { month: "Mar", "Mes Pasado": 14000, "Mes Actual": 21000 },
+  ];
 
-  const pieConfig = {
-    data: [
-      { type: "Impacto Social", value: 40 },
-      { type: "Sostenibilidad", value: 35 },
-      { type: "Innovación", value: 25 },
-    ],
-    angleField: "value",
-    colorField: "type",
-  };
+  // Datos para la gráfica de pastel
+  const pieData = [
+    { name: "Impacto Social", value: 40 },
+    { name: "Sostenibilidad", value: 35 },
+    { name: "Innovación", value: 25 },
+  ];
+
+  // Colores para el gráfico de pastel
+  const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
   const columns = [
     { title: "Fecha", dataIndex: "fecha", key: "fecha" },
@@ -92,8 +83,35 @@ const Dashboard = () => {
         ))}
       </Row>
       <Row gutter={16} style={{ marginTop: 20 }}>
-        <Col span={12}><Card title="Monto recaudado"><Line {...lineConfig} /></Card></Col>
-        <Col span={12}><Card title="Categorías de Proyectos Invertidos"><Pie {...pieConfig} /></Card></Col>
+        <Col span={12}>
+          <Card title="Monto recaudado">
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={lineData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="Mes Pasado" stroke="#8884d8" />
+                <Line type="monotone" dataKey="Mes Actual" stroke="#82ca9d" />
+              </LineChart>
+            </ResponsiveContainer>
+          </Card>
+        </Col>
+        <Col span={12}>
+          <Card title="Categorías de Proyectos Invertidos">
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </Card>
+        </Col>
       </Row>
       <Card title="Inversiones Recientes" style={{ marginTop: 20 }}>
         <Table columns={columns} dataSource={dataSource} pagination={false} />

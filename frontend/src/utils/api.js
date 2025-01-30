@@ -56,6 +56,16 @@ export const fetchRoleById = async (id) => {
         throw new Error("Error al obtener el rol. Intenta nuevamente.");
     }
 };
+export const fetchRoles = async () => {
+    try {
+        const response = await API.get('/roles');
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener roles:', error);
+        throw new Error('Error al obtener los roles.');
+    }
+};
+
 
 // Usuarios
 
@@ -76,85 +86,6 @@ export const createUser = async (userData) => {
     } catch (error) {
         console.error('Error en createUser:', error.response?.data || error.message);
         throw new Error(error.response?.data?.mensaje || 'Error al crear el usuario.');
-    }
-};
-
-// Asignar Rol
-export const assignUserRole = async (roleData) => {
-    try {
-        const response = await API.post('/usuario_roles/', roleData);
-        return response.data;
-    } catch (error) {
-        console.error('Error en assignUserRole:', error.response?.data || error.message);
-        throw new Error(error.response?.data?.mensaje || 'Error al asignar rol.');
-    }
-};
-
-// Información Personal
-export const createUserPersonalInfo = async (personalInfo) => {
-    try {
-        const response = await API.post('/informacion-personal/', personalInfo);
-        return response.data;
-    } catch (error) {
-        console.error('Error en createUserPersonalInfo:', error.response?.data || error.message);
-        throw new Error(error.response?.data?.mensaje || 'Error al crear información personal.');
-    }
-};
-
-// Información de Contacto
-export const createUserContactInfo = async (contactInfo) => {
-    try {
-        const response = await API.post('/informacion-contacto/', contactInfo);
-        return response.data;
-    } catch (error) {
-        console.error('Error en createUserContactInfo:', error.response?.data || error.message);
-        throw new Error(error.response?.data?.mensaje || 'Error al crear información de contacto.');
-    }
-};
-
-// Información Académica
-export const createUserAcademicInfo = async (academicInfo) => {
-    try {
-        const response = await API.post('/informacion-academica/', academicInfo);
-        return response.data;
-    } catch (error) {
-        console.error('Error en createUserAcademicInfo:', error.response?.data || error.message);
-        throw new Error(error.response?.data?.mensaje || 'Error al crear información académica.');
-    }
-};
-
-// Información Financiera
-export const createUserFinancialInfo = async (financialInfo) => {
-    try {
-        const response = await API.post('/informacion-financiera/', financialInfo);
-        return response.data;
-    } catch (error) {
-        console.error('Error en createUserFinancialInfo:', error.response?.data || error.message);
-        throw new Error(error.response?.data?.mensaje || 'Error al crear información financiera.');
-    }
-};
-
-// Verificación de Usuario
-export const createUserVerification = async (verificationInfo) => {
-    try {
-        const response = await API.post('/usuario-verificacion/', verificationInfo);
-        return response.data;
-    } catch (error) {
-        console.error('Error en createUserVerification:', error.response?.data || error.message);
-        throw new Error(error.response?.data?.mensaje || 'Error al crear la verificación del usuario.');
-    }
-};
-
-
-
-// Asegurar que los endpoints usen `/usuarios/` en vez de `/user/`
-export const fetchUserById = async (id) => {
-    try {
-        const response = await API.get(`/usuarios/${id}`);
-        return response.data;
-    } catch (error) {
-        console.error('Error al obtener usuario por ID:', error);
-        throw error.response?.data || { mensaje: 'Error en el servidor' };
     }
 };
 

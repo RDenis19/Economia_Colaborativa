@@ -23,43 +23,70 @@ const MainView = () => {
 
   // Obtener módulos según los permisos del rol
   const userModules = roles
-  .flatMap((role) => Permissions[role] || []) // Obtener permisos según el rol
-  .filter((mod, index, self) => 
-    self.findIndex((m) => m.name === mod.name) === index
-  ); 
-  
+    .flatMap((role) => Permissions[role] || [])
+    .filter((mod, index, self) => 
+      self.findIndex((m) => m.name === mod.name) === index
+    ); 
+
   console.log("Roles actuales:", roles);
   console.log("Módulos disponibles:", userModules);
-  
+
   const handleLogout = () => {
-    localStorage.removeItem("jwt_token"); // Eliminar el token del almacenamiento local
-    window.location.href = "/"; // Redirigir al login
+    localStorage.removeItem("jwt_token");
+    window.location.href = "/";
   };
 
   return (
     <Layout style={{ height: "100vh" }}>
-      {/* Barra lateral */}
+      {/* Sidebar fijo */}
       <Sidebar links={userModules} onLogout={handleLogout} />
 
-      {/* Contenido principal */}
-      <Layout>
+      {/* Contenedor principal */}
+      <Layout style={{ marginLeft: 0 }}> {/* Ajusta el Sidebar */}
+        
+        {/* Header alineado al Sidebar */}
         <Header 
-          username="Usuario Ejemplo" // Cambiar por el nombre real del usuario si está disponible
+          username="Usuario Ejemplo" 
           profilePic={null} 
           onLogout={handleLogout} 
+          style={{ 
+            width: "calc(100% - 200px)", 
+            backgroundColor: "#001529", 
+            height: "64px", 
+            lineHeight: "64px", 
+            padding: "0 24px", 
+            display: "flex", 
+            alignItems: "center", 
+            position: "fixed", 
+            top: 0, 
+            left: 200, 
+            zIndex: 1000 
+          }}
         />
-        <Content style={{ margin: "24px 16px", padding: 24, background: "#fff" }}>
+
+        {/* Contenido principal alineado debajo del Header */}
+        <Content 
+          style={{ 
+            marginTop: "20px", /* Ajuste para que el contenido no se solape con el Header */
+            marginLeft: "24px", 
+            marginRight: "24px",
+            padding: "24px", 
+            background: "#fff", 
+            borderRadius: "8px", /* Bordes suaves */
+            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)", /* Sombra ligera */
+            overflowY: "auto", 
+            height: "calc(100vh - 90px)", /* Ajuste de altura sin footer */
+          }}
+        >
           <Routes>
             {userModules.map((module, index) => {
-              const Component = Modules[module.component]; // Selecciona el componente dinámico
-              return (
-                <Route key={index} path={module.path} element={<Component />} />
-              );
+              const Component = Modules[module.component];
+              return <Route key={index} path={module.path} element={<Component />} />;
             })}
-            {/* Ruta predeterminada */}
             <Route path="*" element={<Navigate to="/dashboard" />} />
           </Routes>
         </Content>
+
       </Layout>
     </Layout>
   );
