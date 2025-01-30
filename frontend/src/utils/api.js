@@ -61,7 +61,7 @@ export const fetchRoleById = async (id) => {
 
 export const fetchUsers = async () => {
     try {
-        const response = await API.get('/usuarios/'); // Esto se refiere a /usuarios en el backend
+        const response = await API.get('/usuarios/'); 
         return response.data;
     } catch (error) {
         console.error('Error al obtener usuarios:', error);
@@ -69,21 +69,88 @@ export const fetchUsers = async () => {
     }
 };
 
-//  Registrar Usuario
-export const registerUser = async (userData) => {
+export const createUser = async (userData) => {
     try {
-        const response = await API.post('/user/registro', userData);
+        const response = await API.post('/usuarios/', userData);
         return response.data;
     } catch (error) {
-        console.error('Error al registrar usuario:', error);
-        throw error.response?.data || { mensaje: 'Error en el servidor' };
+        console.error('Error en createUser:', error.response?.data || error.message);
+        throw new Error(error.response?.data?.mensaje || 'Error al crear el usuario.');
     }
 };
 
-// visualizar Perfil de un Usuario
+// Asignar Rol
+export const assignUserRole = async (roleData) => {
+    try {
+        const response = await API.post('/usuario_roles/', roleData);
+        return response.data;
+    } catch (error) {
+        console.error('Error en assignUserRole:', error.response?.data || error.message);
+        throw new Error(error.response?.data?.mensaje || 'Error al asignar rol.');
+    }
+};
+
+// Información Personal
+export const createUserPersonalInfo = async (personalInfo) => {
+    try {
+        const response = await API.post('/informacion-personal/', personalInfo);
+        return response.data;
+    } catch (error) {
+        console.error('Error en createUserPersonalInfo:', error.response?.data || error.message);
+        throw new Error(error.response?.data?.mensaje || 'Error al crear información personal.');
+    }
+};
+
+// Información de Contacto
+export const createUserContactInfo = async (contactInfo) => {
+    try {
+        const response = await API.post('/informacion-contacto/', contactInfo);
+        return response.data;
+    } catch (error) {
+        console.error('Error en createUserContactInfo:', error.response?.data || error.message);
+        throw new Error(error.response?.data?.mensaje || 'Error al crear información de contacto.');
+    }
+};
+
+// Información Académica
+export const createUserAcademicInfo = async (academicInfo) => {
+    try {
+        const response = await API.post('/informacion-academica/', academicInfo);
+        return response.data;
+    } catch (error) {
+        console.error('Error en createUserAcademicInfo:', error.response?.data || error.message);
+        throw new Error(error.response?.data?.mensaje || 'Error al crear información académica.');
+    }
+};
+
+// Información Financiera
+export const createUserFinancialInfo = async (financialInfo) => {
+    try {
+        const response = await API.post('/informacion-financiera/', financialInfo);
+        return response.data;
+    } catch (error) {
+        console.error('Error en createUserFinancialInfo:', error.response?.data || error.message);
+        throw new Error(error.response?.data?.mensaje || 'Error al crear información financiera.');
+    }
+};
+
+// Verificación de Usuario
+export const createUserVerification = async (verificationInfo) => {
+    try {
+        const response = await API.post('/usuario-verificacion/', verificationInfo);
+        return response.data;
+    } catch (error) {
+        console.error('Error en createUserVerification:', error.response?.data || error.message);
+        throw new Error(error.response?.data?.mensaje || 'Error al crear la verificación del usuario.');
+    }
+};
+
+
+
+// Asegurar que los endpoints usen `/usuarios/` en vez de `/user/`
 export const fetchUserById = async (id) => {
     try {
-        const response = await API.get(`/user/${id}`);
+        const response = await API.get(`/usuarios/${id}`);
         return response.data;
     } catch (error) {
         console.error('Error al obtener usuario por ID:', error);
@@ -91,10 +158,9 @@ export const fetchUserById = async (id) => {
     }
 };
 
-// Eliminar Usuario
 export const deleteUserById = async (id) => {
     try {
-        const response = await API.delete(`/user/${id}`);
+        const response = await API.delete(`/usuarios/${id}`);
         return response.data;
     } catch (error) {
         console.error('Error al eliminar usuario:', error);
@@ -102,10 +168,9 @@ export const deleteUserById = async (id) => {
     }
 };
 
-// Actualizar usuario
 export const updateUserById = async (id, userData) => {
     try {
-        const response = await API.put(`/user/${id}`, userData);
+        const response = await API.put(`/usuarios/${id}`, userData);
         return response.data;
     } catch (error) {
         console.error('Error al actualizar usuario:', error);
@@ -138,15 +203,62 @@ export const fetchProjects = async () => {
 };
 
 // Tickets
+// Obtener todos los tickets
 export const fetchTickets = async () => {
     try {
-        const response = await API.get(`/tickets`);
+        const response = await API.get('/tickets');
         return response.data;
     } catch (error) {
-        console.error('Error al obtener tickets:', error);
-        throw error.response
-            ? error.response.data
-            : { error: 'Error en el servidor' };
+        console.error('Error al obtener los tickets:', error);
+        throw new Error('No se pudieron obtener los tickets.');
+    }
+};
+
+// Obtener un ticket por ID
+export const fetchTicketById = async (id) => {
+    try {
+        const response = await API.get(`/tickets/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error al obtener el ticket ${id}:`, error);
+        throw new Error('No se pudo obtener el ticket.');
+    }
+};
+
+// Crear un nuevo ticket
+export const createTicket = async (ticketData) => {
+    try {
+        const response = await API.post('/tickets', ticketData, {
+            headers: { 'Content-Type': 'application/json' }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error al crear el ticket:', error);
+        throw new Error('No se pudo crear el ticket.');
+    }
+};
+
+// Actualizar un ticket existente
+export const updateTicket = async (id, ticketData) => {
+    try {
+        const response = await API.put(`/tickets/${id}`, ticketData, {
+            headers: { 'Content-Type': 'application/json' }
+        });
+        return response.data;
+    } catch (error) {
+        console.error(`Error al actualizar el ticket ${id}:`, error);
+        throw new Error('No se pudo actualizar el ticket.');
+    }
+};
+
+// Eliminar un ticket
+export const deleteTicketById = async (id) => {
+    try {
+        await API.delete(`/tickets/${id}`);
+        return { mensaje: 'Ticket eliminado exitosamente.' };
+    } catch (error) {
+        console.error(`Error al eliminar el ticket ${id}:`, error);
+        throw new Error('No se pudo eliminar el ticket.');
     }
 };
 
@@ -165,3 +277,6 @@ export const fetchInvestments = async () => {
 
 
 export default API;
+
+
+

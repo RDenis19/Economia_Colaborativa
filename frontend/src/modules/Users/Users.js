@@ -1,14 +1,15 @@
-// Archivo Usuario.js
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Input, Space, Tooltip } from 'antd';
+import { Table, Button, Input, Space, Tooltip, message } from 'antd';
 import { SearchOutlined, PlusOutlined, EditOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
-import { fetchUsers } from '../../utils/api';
+import { fetchUsers, deleteUserById } from '../../utils/api';
+import AddUsuario from './AddUsuario';
 
 const Usuario = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
   const itemsPerPage = 6;
 
   useEffect(() => {
@@ -29,12 +30,17 @@ const Usuario = () => {
 
   const handleSearch = (e) => {
     setSearchText(e.target.value);
-    setCurrentPage(1); // Reinicia a la primera página cuando se busca
+    setCurrentPage(1);
   };
 
-  const formatearFecha = (fecha) => {
-    const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(fecha).toLocaleDateString('es-ES', opciones);
+  const handleDelete = async (id) => {
+    try {
+      await deleteUserById(id);
+      message.success('Usuario eliminado exitosamente.');
+      cargarUsuarios();
+    } catch (error) {
+      message.error('Error al eliminar usuario.');
+    }
   };
 
   const usuariosFiltrados = usuarios
@@ -42,42 +48,6 @@ const Usuario = () => {
       usuario.usuario.toLowerCase().includes(searchText.toLowerCase())
     )
     .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-  const columnas = [
-    {
-      title: 'Usuario',
-      dataIndex: 'usuario',
-      key: 'usuario',
-    },
-    {
-      title: 'Correo',
-      dataIndex: 'correo',
-      key: 'correo',
-    },
-    {
-      title: 'Fecha de Registro',
-      dataIndex: 'fecha_registro',
-      key: 'fecha_registro',
-      render: (fecha) => formatearFecha(fecha),
-    },
-    {
-      title: 'Acción',
-      key: 'accion',
-      render: (text, record) => (
-        <Space size="middle">
-          <Tooltip title="Ver">
-            <Button icon={<EyeOutlined />} type="primary" />
-          </Tooltip>
-          <Tooltip title="Editar">
-            <Button icon={<EditOutlined />} type="default" />
-          </Tooltip>
-          <Tooltip title="Eliminar">
-            <Button icon={<DeleteOutlined />} type="danger" />
-          </Tooltip>
-        </Space>
-      ),
-    },
-  ];
 
   return (
     <div style={{ padding: '20px' }}>
@@ -90,22 +60,42 @@ const Usuario = () => {
           onChange={handleSearch}
           style={{ width: '300px' }}
         />
-        <Button type="primary" icon={<PlusOutlined />}>Crear Usuario</Button>
+        <Button type="primary" icon={<PlusOutlined />} onClick={() => setShowAddUserModal(true)}>
+          Crear Usuario
+        </Button>
       </div>
+
       <Table
-        columns={columnas}
+        columns={[
+          { title: 'Usuario', dataIndex: 'usuario', key: 'usuario' },
+          { title: 'Correo', dataIndex: 'correo', key: 'correo' },
+          { title: 'Fecha de Registro', dataIndex: 'fecha_registro', key: 'fecha_registro' },
+          {
+            title: 'Acción',
+            key: 'accion',
+            render: (text, record) => (
+              <Space size="middle">
+                <Tooltip title="Ver"><Button icon={<EyeOutlined />} type="primary" /></Tooltip>
+                <Tooltip title="Editar"><Button icon={<EditOutlined />} type="default" /></Tooltip>
+                <Tooltip title="Eliminar">
+                  <Button icon={<DeleteOutlined />} type="danger" onClick={() => handleDelete(record.idusuario)} />
+                </Tooltip>
+              </Space>
+            ),
+          }
+        ]}
         dataSource={usuariosFiltrados}
         loading={loading}
         rowKey="idusuario"
         pagination={{
           current: currentPage,
           pageSize: itemsPerPage,
-          total: usuarios.filter((usuario) =>
-            usuario.usuario.toLowerCase().includes(searchText.toLowerCase())
-          ).length,
+          total: usuarios.length,
           onChange: (page) => setCurrentPage(page),
         }}
       />
+
+      {showAddUserModal && <AddUsuario closeModal={() => setShowAddUserModal(false)} onUserAdded={cargarUsuarios} />}
     </div>
   );
 };
