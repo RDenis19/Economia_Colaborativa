@@ -24,6 +24,12 @@ usuarioCompletoController.updateUserDetails = async (req, res) => {
         const { id } = req.params;
         const data = req.body;
 
+        console.log("Recibiendo datos para actualizar:", id, data); // 👀 LOG IMPORTANTE
+
+        if (!id || Object.keys(data).length === 0) {
+            return res.status(400).json({ mensaje: "Faltan datos para actualizar el usuario" });
+        }
+
         const actualizado = await UsuarioCompleto.updateUserDetails(id, data);
 
         if (!actualizado) {
@@ -32,8 +38,10 @@ usuarioCompletoController.updateUserDetails = async (req, res) => {
 
         res.status(200).json({ mensaje: 'Usuario actualizado exitosamente' });
     } catch (error) {
-        res.status(500).json({ mensaje: 'Error al actualizar usuario', error });
+        console.error("Error en el backend al actualizar usuario:", error);
+        res.status(500).json({ mensaje: 'Error al actualizar usuario', error: error.message });
     }
 };
+
 
 module.exports = usuarioCompletoController;

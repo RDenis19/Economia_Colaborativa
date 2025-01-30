@@ -89,23 +89,36 @@ export const createUser = async (userData) => {
     }
 };
 
-export const deleteUserById = async (id) => {
+// Obtener todos los detalles de un usuario
+export const fetchUserDetails = async (id) => {
     try {
-        const response = await API.delete(`/usuarios/${id}`);
+        const response = await API.get(`/usuario-completo/${id}`);
         return response.data;
     } catch (error) {
-        console.error('Error al eliminar usuario:', error);
-        throw error.response?.data || { mensaje: 'Error en el servidor' };
+        console.error('Error al obtener detalles del usuario:', error);
+        throw new Error('Error al obtener detalles del usuario.');
     }
 };
 
-export const updateUserById = async (id, userData) => {
+// Actualizar la información del usuario
+export const updateUserDetails = async (id, userData) => {
     try {
-        const response = await API.put(`/usuarios/${id}`, userData);
+        const response = await API.put(`/usuario-completo/${id}`, userData);
         return response.data;
     } catch (error) {
         console.error('Error al actualizar usuario:', error);
-        throw error.response?.data || { mensaje: 'Error en el servidor' };
+        throw new Error('Error al actualizar usuario.');
+    }
+};
+
+// Eliminar usuario por ID
+export const deleteUserById = async (id) => {
+    try {
+        await API.delete(`/usuarios/${id}`);
+        return true;
+    } catch (error) {
+        console.error('Error al eliminar usuario:', error);
+        throw new Error('Error al eliminar usuario.');
     }
 };
 

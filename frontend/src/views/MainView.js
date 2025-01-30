@@ -79,7 +79,7 @@ const MainView = () => {
         {/* Contenido principal con margen y estilos optimizados */}
         <Content 
           style={{ 
-            marginTop: "70px", 
+            marginTop: "20px", 
             marginLeft: "24px", 
             marginRight: "24px",
             padding: "24px", 
