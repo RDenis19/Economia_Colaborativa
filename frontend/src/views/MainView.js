@@ -13,8 +13,20 @@ import Users from "../modules/Users/Users";
 import Tickets from "../modules/Tickets/Tickets";
 import Notifications from "../modules/Notifications/Notifications";
 
+// Importar submódulos de proyectos
+import ProjectCategories from "../modules/Projects/Submodules/ProjectCategory/ProjectCategories";
+import ProjectTypes from "../modules/Projects/Submodules/ProjectType/ProjectTypes";
+
 // Registrar los módulos disponibles
-const Modules = { Dashboard, Projects, Users, Tickets, Notifications };
+const Modules = { 
+  Dashboard, 
+  Projects, 
+  Users, 
+  Tickets, 
+  Notifications,
+  ProjectCategories, 
+  ProjectTypes 
+};
 
 const { Content } = Layout;
 
@@ -41,8 +53,8 @@ const MainView = () => {
       {/* Sidebar fijo */}
       <Sidebar links={userModules} onLogout={handleLogout} />
 
-      {/* Contenedor principal */}
-      <Layout style={{ marginLeft: 0 }}> {/* Ajusta el Sidebar */}
+      {/* Contenedor principal con Header fijo */}
+      <Layout style={{ marginLeft: 0 }}>
         
         {/* Header alineado al Sidebar */}
         <Header 
@@ -64,18 +76,18 @@ const MainView = () => {
           }}
         />
 
-        {/* Contenido principal alineado debajo del Header */}
+        {/* Contenido principal con margen y estilos optimizados */}
         <Content 
           style={{ 
-            marginTop: "20px", /* Ajuste para que el contenido no se solape con el Header */
+            marginTop: "70px", 
             marginLeft: "24px", 
             marginRight: "24px",
             padding: "24px", 
             background: "#fff", 
-            borderRadius: "8px", /* Bordes suaves */
-            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)", /* Sombra ligera */
+            borderRadius: "8px",
+            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)", 
             overflowY: "auto", 
-            height: "calc(100vh - 90px)", /* Ajuste de altura sin footer */
+            height: "calc(100vh - 90px)",
           }}
         >
           <Routes>
@@ -83,6 +95,12 @@ const MainView = () => {
               const Component = Modules[module.component];
               return <Route key={index} path={module.path} element={<Component />} />;
             })}
+            
+            {/* Rutas específicas para categorías y tipos de proyectos */}
+            <Route path="/projects/categories" element={<ProjectCategories />} />
+            <Route path="/projects/types" element={<ProjectTypes />} />
+
+            {/* Ruta predeterminada */}
             <Route path="*" element={<Navigate to="/dashboard" />} />
           </Routes>
         </Content>

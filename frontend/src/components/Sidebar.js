@@ -8,6 +8,7 @@ import {
   ProjectOutlined,
   NotificationOutlined,
   MessageOutlined,
+  FolderOpenOutlined,
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
@@ -24,23 +25,40 @@ function Sidebar({ links = [], onLogout }) {
 
   // Definir iconos para los módulos
   const iconMap = {
-    Dashboard: <HomeOutlined />,
-    Usuarios: <UserOutlined />,
-    Proyectos: <ProjectOutlined />,
-    Tickets: <MessageOutlined />,
+    Dashboard: <HomeOutlined />, 
+    Usuarios: <UserOutlined />, 
+    Proyectos: <ProjectOutlined />, 
+    Tickets: <MessageOutlined />, 
     Notificaciones: <NotificationOutlined />,
   };
 
   // Crear los items del menú dinámicamente
-  const menuItems = links.map((link) => ({
-    key: link.path,
-    icon: iconMap[link.name],
-    label: <NavLink to={link.path}>{link.name}</NavLink>,
-    children: link.subMenu?.map((subLink) => ({
-      key: subLink.path,
-      label: <NavLink to={subLink.path}>{subLink.name}</NavLink>,
-    })),
-  }));
+  const menuItems = links.map((link) => {
+    if (link.name === "Proyectos") {
+      return {
+        key: link.path,
+        icon: iconMap[link.name],
+        label: <NavLink to={link.path}>{link.name}</NavLink>,
+        children: [
+          {
+            key: "/projects/categories",
+            icon: <FolderOpenOutlined />,
+            label: <NavLink to="/projects/categories">Categorías</NavLink>,
+          },
+          {
+            key: "/projects/types",
+            icon: <FolderOpenOutlined />,
+            label: <NavLink to="/projects/types">Tipos de Proyecto</NavLink>,
+          },
+        ],
+      };
+    }
+    return {
+      key: link.path,
+      icon: iconMap[link.name],
+      label: <NavLink to={link.path}>{link.name}</NavLink>,
+    };
+  });
 
   return (
     <Sider collapsible collapsed={collapsed} onCollapse={toggleCollapse} theme="dark">

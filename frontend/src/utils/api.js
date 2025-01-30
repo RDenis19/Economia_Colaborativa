@@ -122,17 +122,6 @@ export const updateRoleById = async (id, roleData) => {
     }
 };
 
-// Proyectos
-export const fetchProjects = async () => {
-    try {
-        const response = await API.get('/proyectos/');
-        return response.data;
-    } catch (error) {
-        console.error('Error al obtener proyectos:', error);
-        throw error.response ? error.response.data : { error: 'Error en el servidor' };
-    }
-};
-
 // Tickets
 // Obtener todos los tickets
 export const fetchTickets = async () => {
@@ -205,6 +194,291 @@ export const fetchInvestments = async () => {
             : { error: 'Error en el servidor' };
     }
 };
+
+
+
+// Proyectos
+
+// Obtener todos los proyectos
+export const fetchProjects = async () => {
+    try {
+        const response = await API.get('/proyectos/');
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener proyectos:', error);
+        throw error.response ? error.response.data : { error: 'Error en el servidor' };
+    }
+};
+
+// Obtener un proyecto por ID
+export const fetchProjectById = async (id) => {
+    try {
+        const response = await API.get(`/proyectos/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener el proyecto:', error);
+        throw error.response ? error.response.data : { error: 'Error en el servidor' };
+    }
+};
+
+// Crear un nuevo proyecto
+export const createProject = async (projectData) => {
+    try {
+        const response = await API.post('/proyectos/', projectData);
+        return response.data;
+    } catch (error) {
+        console.error('Error al crear el proyecto:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
+
+// Editar un proyecto
+export const updateProject = async (id, projectData) => {
+    try {
+        const response = await API.put(`/proyectos/${id}`, projectData);
+        return response.data;
+    } catch (error) {
+        console.error('Error al actualizar el proyecto:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
+
+// Eliminar un proyecto
+export const deleteProject = async (id) => {
+    try {
+        const response = await API.delete(`/proyectos/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error al eliminar el proyecto:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
+
+
+//proyecto_categoria
+
+// Obtener todas las categorías de proyectos
+export const fetchProjectCategories = async () => {
+    try {
+        const response = await API.get('/proyecto-categoria/');
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener categorías de proyectos:', error);
+        throw error.response ? error.response.data : { error: 'Error en el servidor' };
+    }
+};
+
+// Obtener una categoría de proyecto por ID
+export const fetchProjectCategoryById = async (id) => {
+    try {
+        const response = await API.get(`/proyecto-categoria/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener la categoría del proyecto:', error);
+        throw error.response ? error.response.data : { error: 'Error en el servidor' };
+    }
+};
+
+// Crear una nueva categoría de proyecto
+export const createProjectCategory = async (categoryData) => {
+    try {
+        const response = await API.post('/proyecto-categoria/', categoryData);
+        return response.data;
+    } catch (error) {
+        console.error('Error al crear la categoría del proyecto:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
+
+// Actualizar una categoría de proyecto
+export const updateProjectCategory = async (id, categoryData) => {
+    try {
+        const response = await API.put(`/proyecto-categoria/${id}`, categoryData);
+        return response.data;
+    } catch (error) {
+        console.error('Error al actualizar la categoría del proyecto:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
+
+// Eliminar una categoría de proyecto
+export const deleteProjectCategory = async (id) => {
+    try {
+        const response = await API.delete(`/proyecto-categoria/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error al eliminar la categoría del proyecto:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
+
+
+
+//proyecto_tipo
+
+// Obtener todos los tipos de proyectos
+export const fetchProjectTypes = async () => {
+    try {
+        const response = await API.get('/proyecto-tipo/');
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener tipos de proyectos:', error);
+        throw error.response ? error.response.data : { error: 'Error en el servidor' };
+    }
+};
+
+// Obtener un tipo de proyecto por ID
+export const fetchProjectTypeById = async (id) => {
+    try {
+        const response = await API.get(`/proyecto-tipo/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener el tipo de proyecto:', error);
+        throw error.response ? error.response.data : { error: 'Error en el servidor' };
+    }
+};
+
+// Crear un nuevo tipo de proyecto
+export const createProjectType = async (typeData) => {
+    try {
+        const response = await API.post('/proyecto-tipo/', typeData);
+        return response.data;
+    } catch (error) {
+        console.error('Error al crear el tipo de proyecto:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
+
+// Actualizar un tipo de proyecto
+export const updateProjectType = async (id, typeData) => {
+    try {
+        const response = await API.put(`/proyecto-tipo/${id}`, typeData);
+        return response.data;
+    } catch (error) {
+        console.error('Error al actualizar el tipo de proyecto:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
+
+// Eliminar un tipo de proyecto
+export const deleteProjectType = async (id) => {
+    try {
+        const response = await API.delete(`/proyecto-tipo/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error al eliminar el tipo de proyecto:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
+
+
+
+//proyecto_verificacion
+
+// Obtener todas las verificaciones de proyectos
+export const fetchAllProjectVerifications = async () => {
+    try {
+        const response = await API.get('/proyecto-verificacion/');
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener todas las verificaciones de proyectos:', error);
+        throw error.response ? error.response.data : { error: 'Error en el servidor' };
+    }
+};
+
+// Obtener la verificación de un proyecto por ID
+export const fetchProjectVerification = async (projectId) => {
+    try {
+        const response = await API.get(`/proyecto-verificacion/${projectId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener verificación del proyecto:', error);
+        throw error.response ? error.response.data : { error: 'Error en el servidor' };
+    }
+};
+
+// Crear una nueva verificación para un proyecto
+export const createProjectVerification = async (verificationData) => {
+    try {
+        const response = await API.post('/proyecto-verificacion/', verificationData);
+        return response.data;
+    } catch (error) {
+        console.error('Error al crear la verificación del proyecto:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
+
+// Actualizar el estado de verificación de un proyecto
+export const updateProjectVerification = async (id, verificationData) => {
+    try {
+        const response = await API.put(`/proyecto-verificacion/${id}`, verificationData);
+        return response.data;
+    } catch (error) {
+        console.error('Error al actualizar verificación del proyecto:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
+
+// Eliminar una verificación de proyecto
+export const deleteProjectVerification = async (id) => {
+    try {
+        const response = await API.delete(`/proyecto-verificacion/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error al eliminar verificación del proyecto:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
+
+
+//proyecto_verificacion_documentos
+
+//Listar todos los verificacion_documentos
+export const fetchAllProjectVerificationDocuments = async () => {
+    try {
+        const response = await API.get('/proyecto-verificacion-documentos/');
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener todos los documentos de verificación:', error);
+        throw error.response ? error.response.data : { error: 'Error en el servidor' };
+    }
+};
+
+//Obtener documentos de verificación de un proyecto
+export const fetchProjectVerificationDocuments = async (verificationId) => {
+    try {
+        const response = await API.get(`/proyecto-verificacion-documentos/${verificationId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error al obtener documentos de verificación:', error);
+        throw error.response ? error.response.data : { error: 'Error en el servidor' };
+    }
+};
+//Subir un nuevo documento de verificación
+export const uploadProjectVerificationDocument = async (documentData) => {
+    try {
+        const response = await API.post('/proyecto-verificacion-documentos/', documentData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error al subir el documento de verificación:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
+//Eliminar un documento de verificación
+export const deleteProjectVerificationDocument = async (documentId) => {
+    try {
+        const response = await API.delete(`/proyecto-verificacion-documentos/${documentId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error al eliminar el documento de verificación:', error);
+        throw error.response?.data || { mensaje: 'Error en el servidor' };
+    }
+};
+
+
+
 
 
 export default API;
