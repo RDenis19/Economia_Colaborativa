@@ -5,26 +5,28 @@ import dayjs from 'dayjs';
 
 const { Option } = Select;
 
-const EditProject = ({ project, visible, onClose, onProjectUpdated }) => {
+const EditProject = ({ visible, onClose, project, onProjectUpdated }) => {
   const [form] = Form.useForm();
   const [categories, setCategories] = useState([]);
   const [types, setTypes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchCategory, setSearchCategory] = useState(""); // Estado para búsqueda de categorías
+  const [searchType, setSearchType] = useState(""); // Estado para búsqueda de tipos
 
   useEffect(() => {
+    loadCategories();
+    loadTypes();
     if (project) {
       form.setFieldsValue({
         nombre: project.nombre,
         descripcion: project.descripcion,
         meta_financiera: project.meta_financiera,
-        fecha_inicio: project.fecha_inicio ? dayjs(project.fecha_inicio) : null, // CORREGIDO
+        fecha_inicio: project.fecha_inicio ? dayjs(project.fecha_inicio) : null,
         id_categoria: project.id_categoria,
         id_tipo: project.id_tipo,
       });
     }
-    loadCategories();
-    loadTypes();
-  }, [project]);  
+  }, [project]);
 
   const loadCategories = async () => {
     try {
@@ -49,7 +51,7 @@ const EditProject = ({ project, visible, onClose, onProjectUpdated }) => {
     try {
       const formattedValues = {
         ...values,
-        fecha_inicio: values.fecha_inicio ? values.fecha_inicio.format("YYYY-MM-DD") : null, // CONVERSIÓN SEGURA
+        fecha_inicio: values.fecha_inicio ? values.fecha_inicio.format("YYYY-MM-DD") : null,
       };
       await updateProject(project.id_proyecto, formattedValues);
       message.success('Proyecto actualizado correctamente');
@@ -61,7 +63,6 @@ const EditProject = ({ project, visible, onClose, onProjectUpdated }) => {
       setLoading(false);
     }
   };
-  
 
   return (
     <Modal
@@ -91,18 +92,31 @@ const EditProject = ({ project, visible, onClose, onProjectUpdated }) => {
           <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
         </Form.Item>
 
-
+        {/* Selección de Categoría con búsqueda */}
         <Form.Item label="Categoría" name="id_categoria" rules={[{ required: true, message: 'Seleccione una categoría' }]}> 
-          <Select>
-            {categories.map(c => (
+          <Select
+            showSearch
+            placeholder="Seleccione la categoría"
+            optionFilterProp="children"
+            onSearch={value => setSearchCategory(value)}
+            filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
+          >
+            {categories.filter(category => category.nombre_categoria.toLowerCase().includes(searchCategory.toLowerCase())).map(c => (
               <Option key={c.id_categoria} value={c.id_categoria}>{c.nombre_categoria}</Option>
             ))}
           </Select>
         </Form.Item>
 
+        {/* Selección de Tipo de Proyecto con búsqueda */}
         <Form.Item label="Tipo de Proyecto" name="id_tipo" rules={[{ required: true, message: 'Seleccione un tipo de proyecto' }]}> 
-          <Select>
-            {types.map(t => (
+          <Select
+            showSearch
+            placeholder="Seleccione el tipo de proyecto"
+            optionFilterProp="children"
+            onSearch={value => setSearchType(value)}
+            filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
+          >
+            {types.filter(type => type.nombre_tipo.toLowerCase().includes(searchType.toLowerCase())).map(t => (
               <Option key={t.id_tipo} value={t.id_tipo}>{t.nombre_tipo}</Option>
             ))}
           </Select>

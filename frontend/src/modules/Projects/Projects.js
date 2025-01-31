@@ -4,6 +4,7 @@ import { PlusOutlined, EyeOutlined, EditOutlined, FileProtectOutlined, FileAddOu
 import { fetchProjects, deleteProject, fetchProjectCategories, fetchProjectTypes } from '../../utils/api';
 import ViewProject from './ViewProject';
 import EditProject from './EditProject';
+import AddProject from "./AddProject";
 import ProjectVerification from './ProjectVerification';
 import ProjectDocuments from './ProjectDocuments';
 
@@ -21,6 +22,9 @@ const Projects = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedType, setSelectedType] = useState(null);
+  const [isAddProjectModalVisible, setIsAddProjectModalVisible] = useState(false);
+  const [isVerificationModalVisible, setIsVerificationModalVisible] = useState(false);
+  const [isDocumentsModalVisible, setIsDocumentsModalVisible] = useState(false);
 
   useEffect(() => {
     loadProjects();
@@ -115,6 +119,33 @@ const Projects = () => {
     setViewMode("edit");
   };
 
+  const handleOpenAddProject = () => {
+    setIsAddProjectModalVisible(true);
+  };
+  
+  const handleCloseAddProject = () => {
+    setIsAddProjectModalVisible(false);
+    loadProjects(); // Recargar proyectos al cerrar el modal
+  };
+
+  const handleOpenVerificationModal = (project) => {
+    setSelectedProject(project);
+    setIsVerificationModalVisible(true);
+  };
+
+  const handleCloseVerificationModal = () => {
+    setIsVerificationModalVisible(false);
+  };
+
+  const handleOpenDocumentsModal = (project) => {
+    setSelectedProject(project);
+    setIsDocumentsModalVisible(true);
+  };
+
+  const handleCloseDocumentsModal = () => {
+    setIsDocumentsModalVisible(false);
+  };
+
   return (
     <div style={{ padding: '20px' }}>
       {viewMode === "list" && (
@@ -136,7 +167,12 @@ const Projects = () => {
             <Select placeholder="Filtrar por Tipo" onChange={setSelectedType} allowClear style={{ width: '200px' }}>
               {types.map(t => <Option key={t.nombre_tipo} value={t.nombre_tipo}>{t.nombre_tipo}</Option>)}
             </Select>
-            <Button type="primary" icon={<PlusOutlined />} onClick={() => setViewMode("add")} style={{ marginLeft: 'auto' }}>
+            <Button 
+              type="primary" 
+              icon={<PlusOutlined />} 
+              onClick={handleOpenAddProject} 
+              style={{ marginLeft: "auto" }}
+            >
               Agregar Proyecto
             </Button>
           </div>
@@ -174,10 +210,10 @@ const Projects = () => {
                     <Button icon={<EditOutlined />} onClick={() => handleEditProject(record)} />
                   </Tooltip>
                   <Tooltip title="Verificación">
-                    <Button icon={<FileProtectOutlined />} onClick={() => { setSelectedProject(record); setViewMode("verification"); }} />
+                    <Button icon={<FileProtectOutlined />} onClick={() => handleOpenVerificationModal(record)} />
                   </Tooltip>
                   <Tooltip title="Documentos">
-                    <Button icon={<FileAddOutlined />} onClick={() => { setSelectedProject(record); setViewMode("documents"); }} />
+                    <Button icon={<FileAddOutlined />} onClick={() => handleOpenDocumentsModal(record)} />
                   </Tooltip>
                 </Space>
               ),
@@ -189,6 +225,27 @@ const Projects = () => {
       ) : (
         viewMode === "view" && <ViewProject project={selectedProject} onBack={() => setViewMode("list")} />
       )}
+      
+      <AddProject 
+        visible={isAddProjectModalVisible} 
+        onClose={handleCloseAddProject} 
+        onProjectAdded={loadProjects} 
+      />
+
+      {/* Modal de Verificación */}
+      <ProjectVerification
+        project={selectedProject}
+        visible={isVerificationModalVisible}
+        onClose={handleCloseVerificationModal}
+        onVerificationUpdated={loadProjects}
+      />
+
+      {/* Modal de Documentos */}
+      <ProjectDocuments
+        project={selectedProject}
+        visible={isDocumentsModalVisible}
+        onClose={handleCloseDocumentsModal}
+      />
     </div>
   );
 };
