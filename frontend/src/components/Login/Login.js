@@ -1,62 +1,65 @@
+// src/components/Login/Login.jsx
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import { Layout, Form, Input, Button, Typography, Row, Col } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { AuthContext } from "../../auth/AuthContext";
-import { loginRequest } from "../../utils/api";
-import FotoLogin from "../../assets/FotoLogin.png"; // Importa la imagen
+import FotoLogin from "../../assets/FotoLogin.png"; // Asegúrate de tener esta imagen
 import "./Login.css";
 
 const { Content } = Layout;
 const { Title } = Typography;
 
 const Login = () => {
-  const { setRoles } = useContext(AuthContext); // Obtener setRoles del contexto
+  const { setRoles } = useContext(AuthContext); // Obtenemos la función para actualizar roles
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (values) => {
+  // Datos de usuario hardcodeados
+  const usuariosHardcodeados = [
+    { email: "admin@example.com", contraseña: "1234", rol_id: 1 },
+    { email: "creador@example.com", contraseña: "1234", rol_id: 2 },
+    { email: "usuario@example.com", contraseña: "1234", rol_id: 3 },
+    { email: "soporte@example.com", contraseña: "1234", rol_id: 4 },
+  ];
+
+  const handleLogin = (values) => {
     setError("");
-    try {
-      const response = await loginRequest({
-        correo: values.email,
-        contraseña: values.contraseña,
-      });
+    // Buscar el usuario en los datos hardcodeados
+    const usuarioEncontrado = usuariosHardcodeados.find(
+      (user) =>
+        user.email.toLowerCase() === values.email.toLowerCase() &&
+        user.contraseña === values.contraseña
+    );
 
-      const { token } = response;
-      localStorage.setItem("jwt_token", token);
-
-      const decoded = jwtDecode(token);
-      console.log("Token decodificado:", decoded);
-
-      const roleMap = {
-        1: "administrador",
-        2: "creador",
-        3: "usuario",
-        4: "soporte",
-      };
-
-      const userRoles = decoded.rol_id ? [roleMap[decoded.rol_id]] : [];
-      console.log("Roles configurados:", userRoles);
-
-      setRoles(userRoles); // Configura roles en el contexto global
-      navigate("/dashboard"); // Redirigir al dashboard
-    } catch (err) {
+    if (!usuarioEncontrado) {
       setError("Error al iniciar sesión. Verifica tus credenciales.");
+      return;
     }
+
+    // Mapeo de rol_id a nombre del rol
+    const roleMap = {
+      1: "administrador",
+      2: "creador",
+      3: "usuario",
+      4: "soporte",
+    };
+
+    const userRoles = [roleMap[usuarioEncontrado.rol_id]];
+    setRoles(userRoles); // Actualizamos el contexto con los roles
+
+    navigate("/dashboard"); // Redirigimos al dashboard
   };
 
-  
   return (
     <Layout className="login-layout">
       <Content>
         <Row justify="center" align="middle" className="login-container">
-          {/* Imagen en el lado izquierdo */}
+          {/* Lado izquierdo con imagen */}
           <Col xs={24} sm={12} className="login-image">
             <div className="login-illustration">
               <img
-                src={FotoLogin} // Usa la imagen importada
+                src={FotoLogin}
                 alt="Login"
                 className="login-img"
               />
@@ -69,7 +72,7 @@ const Login = () => {
             </div>
           </Col>
 
-          {/* Formulario de login */}
+          {/* Formulario de Login */}
           <Col xs={24} sm={12} className="login-form-container">
             <div className="login-form-box">
               <Title level={2}>Iniciar Sesión</Title>
@@ -112,15 +115,32 @@ const Login = () => {
                     size="large"
                   />
                 </Form.Item>
-                {error && (
-                  <p className="login-error">{error}</p>
-                )}
+                {error && <p className="login-error">{error}</p>}
                 <Form.Item>
                   <Button type="primary" htmlType="submit" size="large" block>
                     Ingresar
                   </Button>
                 </Form.Item>
               </Form>
+              <div className="login-info">
+                <p>
+                  <strong>Usuarios de prueba:</strong>
+                </p>
+                <ul>
+                  <li>
+                    <strong>Administrador:</strong> admin@example.com / 1234
+                  </li>
+                  <li>
+                    <strong>Creador:</strong> creador@example.com / 1234
+                  </li>
+                  <li>
+                    <strong>Usuario:</strong> usuario@example.com / 1234
+                  </li>
+                  <li>
+                    <strong>Soporte:</strong> soporte@example.com / 1234
+                  </li>
+                </ul>
+              </div>
             </div>
           </Col>
         </Row>

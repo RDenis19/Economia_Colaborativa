@@ -1,3 +1,4 @@
+// src/auth/Permissions.js
 export const Permissions = {
   administrador: [
     { name: "Dashboard", path: "/dashboard", component: "Dashboard" },

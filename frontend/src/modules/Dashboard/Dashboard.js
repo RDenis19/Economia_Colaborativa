@@ -7,7 +7,7 @@ const Dashboard = () => {
   const summaryData = [
     { title: "Recaudación", value: "$50,000", icon: <DollarOutlined /> },
     { title: "Usuarios Totales", value: "38", icon: <UserOutlined /> },
-    { title: "Número de Proyectos", value: "$25,000", icon: <UserOutlined /> },
+    { title: "Número de Proyectos", value: "250", icon: <UserOutlined /> },
   ];
 
   // Datos para la gráfica de líneas

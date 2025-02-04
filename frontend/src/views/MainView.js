@@ -1,3 +1,4 @@
+// src/views/MainView.jsx
 import React, { useContext } from "react";
 import { Layout } from "antd";
 import { Routes, Route, Navigate } from "react-router-dom";
@@ -6,7 +7,7 @@ import Header from "../components/Header";
 import { AuthContext } from "../auth/AuthContext";
 import { Permissions } from "../auth/Permissions";
 
-// Importar módulos
+// Importar módulos (asegúrate de que estos componentes existan)
 import Dashboard from "../modules/Dashboard/Dashboard";
 import Projects from "../modules/Projects/Projects";
 import Users from "../modules/Users/Users";
@@ -36,7 +37,7 @@ const MainView = () => {
   // Obtener módulos según los permisos del rol
   const userModules = roles
     .flatMap((role) => Permissions[role] || [])
-    .filter((mod, index, self) => 
+    .filter((mod, index, self) =>
       self.findIndex((m) => m.name === mod.name) === index
     ); 
 
@@ -44,7 +45,8 @@ const MainView = () => {
   console.log("Módulos disponibles:", userModules);
 
   const handleLogout = () => {
-    localStorage.removeItem("jwt_token");
+    // Limpiamos cualquier dato de autenticación y recargamos la app
+    localStorage.removeItem("jwt_token"); // (Si en algún momento usas token)
     window.location.href = "/";
   };
 
@@ -53,10 +55,8 @@ const MainView = () => {
       {/* Sidebar fijo */}
       <Sidebar links={userModules} onLogout={handleLogout} />
 
-      {/* Contenedor principal con Header fijo */}
+      {/* Contenedor principal */}
       <Layout style={{ marginLeft: 0 }}>
-        
-        {/* Header alineado al Sidebar */}
         <Header 
           username="Usuario Ejemplo" 
           profilePic={null} 
@@ -76,7 +76,6 @@ const MainView = () => {
           }}
         />
 
-        {/* Contenido principal con margen y estilos optimizados */}
         <Content 
           style={{ 
             marginTop: "20px", 
@@ -93,10 +92,12 @@ const MainView = () => {
           <Routes>
             {userModules.map((module, index) => {
               const Component = Modules[module.component];
-              return <Route key={index} path={module.path} element={<Component />} />;
+              return (
+                <Route key={index} path={module.path} element={<Component />} />
+              );
             })}
-            
-            {/* Rutas específicas para categorías y tipos de proyectos */}
+
+            {/* Rutas específicas para submódulos de proyectos */}
             <Route path="/projects/categories" element={<ProjectCategories />} />
             <Route path="/projects/types" element={<ProjectTypes />} />
 
@@ -104,7 +105,6 @@ const MainView = () => {
             <Route path="*" element={<Navigate to="/dashboard" />} />
           </Routes>
         </Content>
-
       </Layout>
     </Layout>
   );
