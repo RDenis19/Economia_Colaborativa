@@ -8,16 +8,15 @@ import { AuthContext } from "./auth/AuthContext";
 const App = () => {
   const { roles } = useContext(AuthContext);
 
-  // Si no hay roles, se mostrará el login; de lo contrario, la vista principal.
   return (
     <Routes>
       {/* Ruta pública para Login */}
       <Route path="/" element={<Login />} />
-      
-      {/* Si se han asignado roles, se carga MainView */}
+
+      {/* Si hay roles, carga la vista principal */}
       {roles.length > 0 && <Route path="/*" element={<MainView />} />}
-      
-      {/* Si no hay roles, cualquier otra ruta redirige a "/" */}
+
+      {/* Si no hay roles, redirige a Login */}
       {roles.length === 0 && <Route path="*" element={<Navigate to="/" />} />}
     </Routes>
   );
