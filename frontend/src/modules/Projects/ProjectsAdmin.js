@@ -1,22 +1,24 @@
 // Projects.jsx
 import React, { useState, useEffect } from 'react';
 import {
-  Table,
-  Button,
+  Layout,
+  Row,
+  Col,
   Form,
   Input,
   Select,
-  Space,
-  Tag,
-  Popconfirm,
-  message,
+  Button,
+  Table,
   Divider,
-  Row,
-  Col,
   Descriptions,
   Upload,
   DatePicker,
-  InputNumber
+  InputNumber,
+  Space,
+  message,
+  Typography,
+  Popconfirm,  // Asegurarse de importar Popconfirm y Tag
+  Tag
 } from 'antd';
 import {
   EyeOutlined,
@@ -27,11 +29,14 @@ import {
   CloseCircleOutlined,
   ClockCircleOutlined,
   UploadOutlined,
-  SmileOutlined  // Se agrega SmileOutlined
+  SmileOutlined,
+  FileTextOutlined
 } from '@ant-design/icons';
 import moment from 'moment';
 
+const { Header, Content } = Layout;
 const { Option } = Select;
+const { Title } = Typography;
 const STORAGE_KEY = 'proyectos-crowlanding';
 
 // Utilidad: convierte un archivo a Base64 (para simular la subida y obtener preview)
@@ -69,9 +74,11 @@ const Projects = () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
   }, [projects]);
 
-  // ---------------------------
-  // Funciones para cambiar de vista
-  // ---------------------------
+  // ----------------------------
+  // Funciones de navegación y acciones
+  // ----------------------------
+
+  // Abrir formulario para agregar un proyecto
   const handleAdd = () => {
     setFormMode('create');
     form.resetFields();
@@ -79,6 +86,7 @@ const Projects = () => {
     setCurrentView('form');
   };
 
+  // Abrir formulario para editar
   const handleEdit = (project) => {
     setFormMode('edit');
     setActiveProject(project);
@@ -91,28 +99,27 @@ const Projects = () => {
     setCurrentView('form');
   };
 
+  // Ver detalle del proyecto
   const handleView = (project) => {
     setActiveProject(project);
     setCurrentView('detail');
   };
 
-  // ---------------------------
-  // Funciones de acciones
-  // ---------------------------
+  // Eliminar proyecto
   const handleDelete = (projectName) => {
-    setProjects(projects.filter((p) => p.nombre !== projectName));
+    setProjects(projects.filter(p => p.nombre !== projectName));
     message.success('Proyecto eliminado');
   };
 
-  // Función para actualizar el estado del proyecto
+  // Actualizar estado del proyecto
   const updateProjectStatus = (projectName, newStatus) => {
-    const updated = projects.map((p) =>
+    const updated = projects.map(p =>
       p.nombre === projectName ? { ...p, estado: newStatus } : p
     );
     setProjects(updated);
   };
 
-  // Función invocada por los botones de estado
+  // Función invocada por los botones de estado en la vista de detalle
   const handleUpdateStatus = (newStatus) => {
     if (activeProject) {
       updateProjectStatus(activeProject.nombre, newStatus);
@@ -138,9 +145,7 @@ const Projects = () => {
     message.success('Información verificada y completada');
   };
 
-  // ---------------------------
-  // Manejo del envío del formulario
-  // ---------------------------
+  // Manejo del envío del formulario (crear o editar)
   const onFinish = (values) => {
     const processedValues = {
       ...values,
@@ -148,7 +153,7 @@ const Projects = () => {
       fechaInicio: values.fechaInicio.format('YYYY-MM-DD')
     };
     if (formMode === 'create') {
-      const exists = projects.some((p) => p.nombre === processedValues.nombre);
+      const exists = projects.some(p => p.nombre === processedValues.nombre);
       if (exists) {
         message.error('Ya existe un proyecto con ese nombre');
         return;
@@ -156,27 +161,35 @@ const Projects = () => {
       setProjects([...projects, processedValues]);
       message.success('Proyecto creado exitosamente');
     } else if (formMode === 'edit') {
-      setProjects(
-        projects.map((p) =>
-          p.nombre === activeProject.nombre ? processedValues : p
-        )
-      );
+      setProjects(projects.map(p =>
+        p.nombre === activeProject.nombre ? processedValues : p
+      ));
       message.success('Proyecto actualizado exitosamente');
     }
     form.resetFields();
     setCurrentView('list');
   };
 
-  // ---------------------------
+  // Filtrar proyectos según búsqueda y estado
+  const filteredProjects = projects.filter(p => {
+    const matchesSearch = searchFilter
+      ? p.nombre.toLowerCase().includes(searchFilter.toLowerCase()) ||
+        p.creador.toLowerCase().includes(searchFilter.toLowerCase())
+      : true;
+    const matchesStatus = statusFilter ? p.estado === statusFilter : true;
+    return matchesSearch && matchesStatus;
+  });
+
+  // ----------------------------
   // Definición de columnas para la tabla
-  // ---------------------------
+  // ----------------------------
   const columns = [
     { title: 'Nombre', dataIndex: 'nombre', key: 'nombre' },
     {
       title: 'Descripción',
       dataIndex: 'descripcion',
       key: 'descripcion',
-      render: (text) => (text.length > 30 ? text.substring(0, 30) + '...' : text)
+      render: (text) => text.length > 30 ? text.substring(0, 30) + '...' : text
     },
     {
       title: 'Meta Financiera',
@@ -192,15 +205,13 @@ const Projects = () => {
       dataIndex: 'estado',
       key: 'estado',
       render: (estado) => (
-        <Tag
-          color={
-            estado === 'Aprobado'
-              ? 'green'
-              : estado === 'Rechazado'
-              ? 'red'
-              : 'orange'
-          }
-        >
+        <Tag color={
+          estado === 'Aprobado'
+            ? 'green'
+            : estado === 'Rechazado'
+            ? 'red'
+            : 'orange'
+        }>
           {estado}
         </Tag>
       )
@@ -225,31 +236,20 @@ const Projects = () => {
     }
   ];
 
-  // Filtrar proyectos según búsqueda y estado
-  const filteredProjects = projects.filter((p) => {
-    const matchesSearch = searchFilter
-      ? p.nombre.toLowerCase().includes(searchFilter.toLowerCase()) ||
-        p.creador.toLowerCase().includes(searchFilter.toLowerCase())
-      : true;
-    const matchesStatus = statusFilter ? p.estado === statusFilter : true;
-    return matchesSearch && matchesStatus;
-  });
-
-  // ---------------------------
+  // ----------------------------
   // Vistas (State Views)
-  // ---------------------------
+  // ----------------------------
 
   // Vista de lista de proyectos
   const renderList = () => (
     <div style={{ padding: 24 }}>
-      <h1>Gestión de Proyectos - Crowlanding</h1>
       <Space style={{ marginBottom: 16 }}>
         <Input
           placeholder="Buscar por nombre o creador"
           prefix={<SearchOutlined />}
+          allowClear
           value={searchFilter}
           onChange={(e) => setSearchFilter(e.target.value)}
-          allowClear
         />
         <Select
           placeholder="Filtrar por estado"
@@ -266,19 +266,19 @@ const Projects = () => {
           Agregar Proyecto
         </Button>
       </Space>
-      <Table columns={columns} dataSource={filteredProjects} rowKey="nombre" bordered />
+      <Table dataSource={filteredProjects} columns={columns} rowKey="nombre" bordered />
     </div>
   );
 
   // Vista del formulario para agregar/editar proyecto
   const renderForm = () => (
     <div style={{ padding: 24 }}>
-      <h2>{formMode === 'create' ? 'Agregar Proyecto' : 'Editar Proyecto'}</h2>
+      <Title level={3}>{formMode === 'create' ? 'Agregar Proyecto' : 'Editar Proyecto'}</Title>
       <Button style={{ marginBottom: 16 }} onClick={() => setCurrentView('list')}>
         Regresar a la Lista
       </Button>
       <Form form={form} layout="vertical" onFinish={onFinish}>
-        {/* Fila 1: Datos básicos */}
+        {/* Row 1: Datos básicos */}
         <Row gutter={16}>
           <Col span={6}>
             <Form.Item
@@ -330,7 +330,7 @@ const Projects = () => {
           </Col>
         </Row>
 
-        {/* Fila 2: Fechas, creador y estado */}
+        {/* Row 2: Fechas, creador y estado */}
         <Row gutter={16}>
           <Col span={6}>
             <Form.Item
@@ -374,7 +374,7 @@ const Projects = () => {
           </Col>
         </Row>
 
-        {/* Fila 3: Localización y Sector */}
+        {/* Row 3: Localización y Sector */}
         <Row gutter={16}>
           <Col span={6}>
             <Form.Item
@@ -414,7 +414,7 @@ const Projects = () => {
           </Col>
         </Row>
 
-        {/* Fila 4: Subir imagen */}
+        {/* Row 4: Subir imagen */}
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item label="Foto del Emprendimiento" name="imagen">
@@ -438,7 +438,7 @@ const Projects = () => {
 
         <Divider orientation="left">Información Adicional</Divider>
 
-        {/* Fila 5: Objetivos, Beneficios y Riesgos */}
+        {/* Row 5: Objetivos, Beneficios y Riesgos */}
         <Row gutter={16}>
           <Col span={8}>
             <Form.Item label="Objetivos" name="objetivos">
@@ -478,7 +478,9 @@ const Projects = () => {
 
         <Form.Item>
           <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button onClick={() => setCurrentView('list')}>Cancelar</Button>
+            <Button onClick={() => setCurrentView('list')}>
+              Cancelar
+            </Button>
             <Button type="primary" htmlType="submit">
               {formMode === 'create' ? 'Crear Proyecto' : 'Actualizar Proyecto'}
             </Button>
@@ -488,10 +490,10 @@ const Projects = () => {
     </div>
   );
 
-  // Vista de detalle del proyecto (distribución profesional)
+  // Vista de detalle del proyecto con diseño llamativo
   const renderDetail = () => (
     <div style={{ padding: 24 }}>
-      <h2 style={{ marginBottom: 24 }}>Detalle del Proyecto</h2>
+      <Title level={2} style={{ marginBottom: 24 }}>Detalle del Proyecto</Title>
       {activeProject && (
         <Descriptions
           bordered
@@ -560,11 +562,25 @@ const Projects = () => {
   );
 
   return (
-    <div>
-      {currentView === 'list' && renderList()}
-      {currentView === 'form' && renderForm()}
-      {currentView === 'detail' && renderDetail()}
-    </div>
+    <Layout style={{ minHeight: "100vh", background: "#f0f2f5" }}>
+      <Header style={{ background: "#001529", padding: "0 24px" }}>
+        <Row align="middle">
+          <Col>
+            <FileTextOutlined style={{ fontSize: "32px", color: "#fff", marginRight: "16px" }} />
+          </Col>
+          <Col>
+            <h1 style={{ color: "#fff", fontSize: "24px", lineHeight: "64px", margin: 0 }}>
+              Gestión de Proyectos - Crowlanding
+            </h1>
+          </Col>
+        </Row>
+      </Header>
+      <Content style={{ margin: "24px" }}>
+        {currentView === 'list' && renderList()}
+        {currentView === 'form' && renderForm()}
+        {currentView === 'detail' && renderDetail()}
+      </Content>
+    </Layout>
   );
 };
 

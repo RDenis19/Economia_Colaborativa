@@ -1,24 +1,59 @@
+// TicketSystem.js
 import React, { useState, useEffect } from 'react';
 import {
-  Table,
+  Layout,
+  Card,
+  Row,
+  Col,
+  Form,
   Input,
-  Button,
   Select,
+  Button,
+  Table,
   Modal,
   Drawer,
-  Form,
   Space,
+  Checkbox,
   message,
-  Descriptions
+  Descriptions,
 } from 'antd';
 import {
   EyeOutlined,
   EditOutlined,
-  DeleteOutlined
+  DeleteOutlined,
+  FileTextOutlined
 } from '@ant-design/icons';
 
+const { Header, Content } = Layout;
 const { Option } = Select;
 const { TextArea } = Input;
+
+// Estilos en línea (idénticos a CategoryDashboard.js)
+const containerStyle = {
+  minHeight: "100vh",
+  background: "#f0f2f5",
+};
+
+const headerStyle = {
+  background: "#001529",
+  padding: "0 24px",
+};
+
+const headerTitleStyle = {
+  color: "#fff",
+  fontSize: "24px",
+  lineHeight: "64px",
+  margin: 0,
+};
+
+const contentStyle = {
+  margin: "24px",
+};
+
+const cardStyle = {
+  marginBottom: "24px",
+  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+};
 
 const TicketSystem = () => {
   // Estados principales
@@ -35,10 +70,13 @@ const TicketSystem = () => {
   // Estado para el Modal de visualización
   const [viewModalVisible, setViewModalVisible] = useState(false);
 
+  // Estado para selección masiva
+  const [selectedIds, setSelectedIds] = useState([]);
+
   // Referencia al formulario del Drawer
   const [form] = Form.useForm();
 
-  // Cargar datos desde localStorage o con datos de ejemplo al iniciar
+  // Cargar datos desde localStorage o datos de ejemplo al iniciar
   useEffect(() => {
     const storedTickets = localStorage.getItem('tickets');
     if (storedTickets) {
@@ -86,7 +124,7 @@ const TicketSystem = () => {
     setFilteredTickets(filtered);
   }, [tickets, searchText, filterPriority]);
 
-  // Función para actualizar el localStorage
+  // Actualiza el localStorage
   const updateLocalStorage = newTickets => {
     localStorage.setItem('tickets', JSON.stringify(newTickets));
   };
@@ -119,7 +157,7 @@ const TicketSystem = () => {
     setViewModalVisible(true);
   };
 
-  // Función para eliminar un ticket
+  // Función para eliminar un ticket individual
   const onDeleteTicket = ticket => {
     Modal.confirm({
       title: '¿Está seguro de eliminar este ticket?',
@@ -130,6 +168,34 @@ const TicketSystem = () => {
         message.success('Ticket eliminado');
       }
     });
+  };
+
+  // Eliminación masiva
+  const handleBulkDelete = () => {
+    if (selectedIds.length === 0) {
+      message.warning('No hay tickets seleccionados');
+      return;
+    }
+    Modal.confirm({
+      title: 'Eliminar Tickets',
+      content: `¿Está seguro de eliminar los ${selectedIds.length} tickets seleccionados?`,
+      onOk: () => {
+        const newTickets = tickets.filter(t => !selectedIds.includes(t.id));
+        setTickets(newTickets);
+        updateLocalStorage(newTickets);
+        setSelectedIds([]);
+        message.success('Tickets eliminados');
+      }
+    });
+  };
+
+  // Manejo de la selección (checkbox)
+  const handleSelect = (id, checked) => {
+    if (checked) {
+      setSelectedIds(prev => [...prev, id]);
+    } else {
+      setSelectedIds(prev => prev.filter(item => item !== id));
+    }
   };
 
   // Manejo del envío del formulario (agregar o editar)
@@ -158,11 +224,9 @@ const TicketSystem = () => {
         prioridad: values.prioridad,
         estado: values.estado
       };
-      // Si el estado pasa a "Cerrado" y aún no se ha asignado fecha de cierre, se asigna
       if (values.estado === 'Cerrado' && !currentTicket.fechaCierre) {
         updatedTicket.fechaCierre = new Date().toLocaleDateString();
       }
-      // Si el estado ya no es Cerrado, se limpia la fecha de cierre
       if (values.estado !== 'Cerrado') {
         updatedTicket.fechaCierre = '';
       }
@@ -176,8 +240,19 @@ const TicketSystem = () => {
     setDrawerVisible(false);
   };
 
-  // Definición de las columnas de la tabla
+  // Definición de las columnas de la tabla, agregando la columna de selección como primera columna
   const columns = [
+    {
+      title: '',
+      key: 'select',
+      render: (_, record) => (
+        <Checkbox
+          checked={selectedIds.includes(record.id)}
+          onChange={e => handleSelect(record.id, e.target.checked)}
+        />
+      ),
+      width: 50,
+    },
     {
       title: 'Creador',
       dataIndex: 'creador',
@@ -219,51 +294,71 @@ const TicketSystem = () => {
       key: 'accion',
       render: (_, record) => (
         <Space>
-          <Button
-            icon={<EyeOutlined />}
-            onClick={() => onViewTicket(record)}
-          />
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => onEditTicket(record)}
-          />
-          <Button
-            icon={<DeleteOutlined />}
-            danger
-            onClick={() => onDeleteTicket(record)}
-          />
+          <Button icon={<EyeOutlined />} onClick={() => onViewTicket(record)} />
+          <Button icon={<EditOutlined />} onClick={() => onEditTicket(record)} />
+          <Button icon={<DeleteOutlined />} danger onClick={() => onDeleteTicket(record)} />
         </Space>
       )
     }
   ];
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Lista de tickets</h2>
-      <Space style={{ marginBottom: 16 }}>
-        <Input.Search
-          placeholder="Buscar por Creador o Asunto"
-          allowClear
-          onSearch={value => setSearchText(value)}
-          onChange={e => setSearchText(e.target.value)}
-          style={{ width: 200 }}
-        />
-        <Select
-          placeholder="Filtrar por Prioridad"
-          allowClear
-          onChange={value => setFilterPriority(value)}
-          style={{ width: 150 }}
-        >
-          <Option value="Alta">Alta</Option>
-          <Option value="Media">Media</Option>
-          <Option value="Baja">Baja</Option>
-        </Select>
-        <Button type="primary" onClick={onAddTicket}>
-          Agregar nuevo ticket
-        </Button>
-      </Space>
-
-      <Table dataSource={filteredTickets} columns={columns} rowKey="id" />
+    <Layout style={containerStyle}>
+      <Header style={headerStyle}>
+        <Row align="middle">
+          <Col>
+            <FileTextOutlined style={{ fontSize: "32px", color: "#fff", marginRight: "16px" }} />
+          </Col>
+          <Col>
+            <h1 style={headerTitleStyle}>Sistema de Tickets</h1>
+          </Col>
+        </Row>
+      </Header>
+      <Content style={contentStyle}>
+        <Card title="Administrar Tickets" style={cardStyle}>
+          <Row gutter={16} style={{ marginBottom: "16px" }}>
+            <Col xs={24} md={8}>
+              <Input.Search
+                placeholder="Buscar por Creador o Asunto"
+                allowClear
+                onSearch={value => setSearchText(value)}
+                onChange={e => setSearchText(e.target.value)}
+                style={{ width: 250 }}
+              />
+            </Col>
+            <Col xs={24} md={6}>
+              <Select
+                placeholder="Filtrar por Prioridad"
+                allowClear
+                onChange={value => setFilterPriority(value)}
+                style={{ width: "100%" }}
+              >
+                <Option value="Alta">Alta</Option>
+                <Option value="Media">Media</Option>
+                <Option value="Baja">Baja</Option>
+              </Select>
+            </Col>
+            <Col xs={24} md={10} style={{ textAlign: "right" }}>
+              <Button type="primary" onClick={onAddTicket}>
+                Agregar nuevo ticket
+              </Button>
+            </Col>
+          </Row>
+          {selectedIds.length > 0 && (
+            <Row justify="end" style={{ marginBottom: 16 }}>
+              <Button
+                type="primary"
+                danger
+                onClick={handleBulkDelete}
+                icon={<DeleteOutlined />}
+              >
+                Eliminar Seleccionados
+              </Button>
+            </Row>
+          )}
+          <Table dataSource={filteredTickets} columns={columns} rowKey="id" />
+        </Card>
+      </Content>
 
       {/* Drawer para Agregar / Editar Ticket */}
       <Drawer
@@ -277,36 +372,28 @@ const TicketSystem = () => {
           <Form.Item
             label="Creador"
             name="creador"
-            rules={[
-              { required: true, message: 'Por favor ingrese el creador' }
-            ]}
+            rules={[{ required: true, message: 'Por favor ingrese el creador' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             label="Asunto"
             name="asunto"
-            rules={[
-              { required: true, message: 'Por favor ingrese el asunto' }
-            ]}
+            rules={[{ required: true, message: 'Por favor ingrese el asunto' }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
             label="Descripción"
             name="descripcion"
-            rules={[
-              { required: true, message: 'Por favor ingrese la descripción' }
-            ]}
+            rules={[{ required: true, message: 'Por favor ingrese la descripción' }]}
           >
             <TextArea rows={4} />
           </Form.Item>
           <Form.Item
             label="Prioridad"
             name="prioridad"
-            rules={[
-              { required: true, message: 'Por favor seleccione la prioridad' }
-            ]}
+            rules={[{ required: true, message: 'Por favor seleccione la prioridad' }]}
           >
             <Select placeholder="Seleccione la prioridad">
               <Option value="Alta">Alta</Option>
@@ -318,9 +405,7 @@ const TicketSystem = () => {
             <Form.Item
               label="Estado"
               name="estado"
-              rules={[
-                { required: true, message: 'Por favor seleccione el estado' }
-              ]}
+              rules={[{ required: true, message: 'Por favor seleccione el estado' }]}
             >
               <Select placeholder="Seleccione el estado">
                 <Option value="Abierto">Abierto</Option>
@@ -339,7 +424,7 @@ const TicketSystem = () => {
         </Form>
       </Drawer>
 
-      {/* Modal para Visualizar Ticket con diseño mejorado */}
+      {/* Modal para Visualizar Ticket */}
       <Modal
         visible={viewModalVisible}
         title="Detalles del Ticket"
@@ -351,32 +436,34 @@ const TicketSystem = () => {
         onCancel={() => setViewModalVisible(false)}
       >
         {currentTicket && (
-          <Descriptions title="Información del Ticket" bordered column={1}>
-            <Descriptions.Item label="Creador">
-              {currentTicket.creador}
-            </Descriptions.Item>
-            <Descriptions.Item label="Asunto">
-              {currentTicket.asunto}
-            </Descriptions.Item>
-            <Descriptions.Item label="Descripción">
-              {currentTicket.descripcion}
-            </Descriptions.Item>
-            <Descriptions.Item label="Prioridad">
-              {currentTicket.prioridad}
-            </Descriptions.Item>
-            <Descriptions.Item label="Estado">
-              {currentTicket.estado}
-            </Descriptions.Item>
-            <Descriptions.Item label="Fecha Creación">
-              {currentTicket.fechaCreacion}
-            </Descriptions.Item>
-            <Descriptions.Item label="Fecha Cierre">
-              {currentTicket.fechaCierre || 'N/A'}
-            </Descriptions.Item>
-          </Descriptions>
+          <Card bordered={false} style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
+            <Descriptions title="Información del Ticket" bordered column={1}>
+              <Descriptions.Item label="Creador">
+                {currentTicket.creador}
+              </Descriptions.Item>
+              <Descriptions.Item label="Asunto">
+                {currentTicket.asunto}
+              </Descriptions.Item>
+              <Descriptions.Item label="Descripción">
+                {currentTicket.descripcion}
+              </Descriptions.Item>
+              <Descriptions.Item label="Prioridad">
+                {currentTicket.prioridad}
+              </Descriptions.Item>
+              <Descriptions.Item label="Estado">
+                {currentTicket.estado}
+              </Descriptions.Item>
+              <Descriptions.Item label="Fecha Creación">
+                {currentTicket.fechaCreacion}
+              </Descriptions.Item>
+              <Descriptions.Item label="Fecha Cierre">
+                {currentTicket.fechaCierre || 'N/A'}
+              </Descriptions.Item>
+            </Descriptions>
+          </Card>
         )}
       </Modal>
-    </div>
+    </Layout>
   );
 };
 
