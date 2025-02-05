@@ -122,25 +122,6 @@ const Login = () => {
                   </Button>
                 </Form.Item>
               </Form>
-              <div className="login-info">
-                <p>
-                  <strong>Usuarios de prueba:</strong>
-                </p>
-                <ul>
-                  <li>
-                    <strong>Administrador:</strong> admin@example.com / 1234
-                  </li>
-                  <li>
-                    <strong>Creador:</strong> creador@example.com / 1234
-                  </li>
-                  <li>
-                    <strong>Usuario:</strong> usuario@example.com / 1234
-                  </li>
-                  <li>
-                    <strong>Soporte:</strong> soporte@example.com / 1234
-                  </li>
-                </ul>
-              </div>
             </div>
           </Col>
         </Row>
