@@ -1,13 +1,373 @@
-// src/modules/Inversiones/Inversiones.js
-import React from "react";
+// C:\Users\HP\Desktop\Economia_Colaborativa\frontend\src\modules\Dashboard\DashboardCreador.js
 
-const DashboardCreator = () => {
+import React, { useState } from "react";
+import {
+  Row,
+  Col,
+  Card,
+  Statistic,
+  Select,
+  Button,
+  Tag,
+  Table,
+  Divider,
+  List,
+  Avatar,
+  Tooltip,
+  Space,
+} from "antd";
+import { UserOutlined, CameraOutlined } from "@ant-design/icons";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip as RechartsTooltip,
+  Legend,
+} from "recharts";
+
+const { Option } = Select;
+
+/**
+ * Componente que muestra únicamente la "presentación de datos"
+ * para un creador de proyectos:
+ * - Selector de proyectos
+ * - Tarjetas de métricas
+ * - Gráfica (LineChart)
+ * - Tabla de transacciones
+ * - Galería de imágenes
+ * - Comentarios/Feedback
+ */
+const DashboardCreador = () => {
+  // MOCK: Lista de proyectos del usuario creador
+  const [projects] = useState([
+    { id: 1, name: "Proyecto Salud Rural" },
+    { id: 2, name: "Educación Inclusiva" },
+    { id: 3, name: "Huerto Ecológico" },
+  ]);
+
+  // MOCK: Proyecto seleccionado
+  const [selectedProject, setSelectedProject] = useState(projects[0].id);
+
+  // MOCK: Estadísticas
+  const [projectStats] = useState({
+    totalDonations: 1139240.25,
+    avgDonation: 231.2,
+    totalRevenue: 500420.25,
+    totalVisitors: 400000,
+    currency: "USD",
+  });
+
+  // MOCK: Datos para la gráfica de ingresos
+  const [revenueData] = useState([
+    { month: "Abr", revenue: 45000 },
+    { month: "May", revenue: 52000 },
+    { month: "Jun", revenue: 48000 },
+    { month: "Jul", revenue: 60000 },
+    { month: "Ago", revenue: 55000 },
+    { month: "Sep", revenue: 70000 },
+    { month: "Oct", revenue: 75000 },
+    { month: "Nov", revenue: 80000 },
+    { month: "Dic", revenue: 82000 },
+  ]);
+
+  // MOCK: Transacciones (donaciones recibidas)
+  const columnsTransacciones = [
+    {
+      title: "Usuario",
+      dataIndex: "name",
+      key: "name",
+      render: () => (
+        <Avatar
+          style={{ marginRight: 8, backgroundColor: "#87d068" }}
+          icon={<UserOutlined />}
+        />
+      ),
+    },
+    { title: "ID", dataIndex: "customerId", key: "customerId" },
+    { title: "Tipo", dataIndex: "type", key: "type" },
+    { title: "Ubicación", dataIndex: "location", key: "location" },
+    { title: "Fecha", dataIndex: "date", key: "date" },
+    {
+      title: "Estado",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => (
+        <Tag color={status === "Approved" ? "green" : "red"}>{status}</Tag>
+      ),
+    },
+    { title: "Monto", dataIndex: "amount", key: "amount" },
+  ];
+
+  const dataTransacciones = [
+    {
+      key: 1,
+      name: "Aaron Alexander",
+      customerId: "AA-100",
+      type: "Humanity",
+      location: "Jakarta, Indonesia",
+      date: "24/01/2024",
+      status: "Approved",
+      amount: "$402.00",
+    },
+    {
+      key: 2,
+      name: "Michelle Joaquin",
+      customerId: "MJ-203",
+      type: "Health",
+      location: "Seoul, South Korea",
+      date: "24/01/2024",
+      status: "Declined",
+      amount: "$210.50",
+    },
+    {
+      key: 3,
+      name: "Carlos Rojas",
+      customerId: "CR-505",
+      type: "Education",
+      location: "Bogotá, Colombia",
+      date: "25/01/2024",
+      status: "Approved",
+      amount: "$340.00",
+    },
+  ];
+
+  // MOCK: Galería de imágenes
+  const [galleryImages] = useState([
+    {
+      id: 1,
+      url: "https://picsum.photos/300/200?random=1",
+      alt: "Imagen 1",
+    },
+    {
+      id: 2,
+      url: "https://picsum.photos/300/200?random=2",
+      alt: "Imagen 2",
+    },
+    {
+      id: 3,
+      url: "https://picsum.photos/300/200?random=3",
+      alt: "Imagen 3",
+    },
+  ]);
+
+  // MOCK: Comentarios / Feedback
+  const [feedbackComments] = useState([
+    {
+      author: "Juan Pérez",
+      avatar: "https://joeschmoe.io/api/v1/random",
+      content: "Me encanta la iniciativa, espero que siga creciendo.",
+      datetime: "Hace 2 horas",
+    },
+    {
+      author: "Sofía Méndez",
+      avatar: "https://joeschmoe.io/api/v1/female/random",
+      content: "¿Cómo puedo participar como voluntaria?",
+      datetime: "Hace 1 día",
+    },
+  ]);
+
+  // Handler: cambio de proyecto
+  const onProjectChange = (value) => {
+    setSelectedProject(value);
+    // Lógica adicional si deseas cargar datos reales de backend
+    console.log("Proyecto seleccionado:", value);
+  };
+
   return (
-    <div>
-      <h2>Módulo de Inversiones</h2>
-      <p>Contenido de inversiones para el rol de usuario.</p>
+    <div style={{ padding: 20 }}>
+      {/* SELECTOR DE PROYECTO Y BOTÓN (OPCIONAL) */}
+      <Row justify="space-between" align="middle" style={{ marginBottom: 20 }}>
+        <Col>
+          <Select
+            value={selectedProject}
+            style={{ width: 240 }}
+            onChange={onProjectChange}
+          >
+            {projects.map((p) => (
+              <Option key={p.id} value={p.id}>
+                {p.name}
+              </Option>
+            ))}
+          </Select>
+        </Col>
+        <Col>
+          <Button type="primary">Publicar Nuevo Proyecto</Button>
+        </Col>
+      </Row>
+
+      {/* TARJETAS DE ESTADÍSTICAS */}
+      <Row gutter={16}>
+        <Col xs={24} sm={12} md={6}>
+          <Card hoverable>
+            <Statistic
+              title="Total Donation"
+              value={projectStats.totalDonations}
+              precision={2}
+              prefix={projectStats.currency === "USD" ? "$" : ""}
+              valueStyle={{ color: "#3f8600" }}
+              suffix={
+                <span style={{ color: "#3f8600" }}>
+                  +3.4% <small>From last month</small>
+                </span>
+              }
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card hoverable>
+            <Statistic
+              title="Avg Donation"
+              value={projectStats.avgDonation}
+              precision={2}
+              prefix={projectStats.currency === "USD" ? "$" : ""}
+              valueStyle={{ color: "#cf1322" }}
+              suffix={
+                <span style={{ color: "#cf1322" }}>
+                  +1.02% <small>From last month</small>
+                </span>
+              }
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card hoverable>
+            <Statistic
+              title="Total Revenue"
+              value={projectStats.totalRevenue}
+              precision={2}
+              prefix={projectStats.currency === "USD" ? "$" : ""}
+              valueStyle={{ color: "#2f54eb" }}
+              suffix={
+                <span style={{ color: "#2f54eb" }}>
+                  +2.15% <small>From last month</small>
+                </span>
+              }
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={6}>
+          <Card hoverable>
+            <Statistic
+              title="Total Visitors"
+              value={projectStats.totalVisitors}
+              precision={0}
+              valueStyle={{ color: "#fa8c16" }}
+              suffix={
+                <span style={{ color: "#fa8c16" }}>
+                  -2.25% <small>From last month</small>
+                </span>
+              }
+            />
+          </Card>
+        </Col>
+      </Row>
+
+      {/* GRÁFICA DE INGRESOS */}
+      <Card
+        title="Revenue"
+        extra={
+          <Space>
+            <Select defaultValue="This year">
+              <Option value="This year">This year</Option>
+              <Option value="Last year">Last year</Option>
+            </Select>
+            <Select defaultValue="Growth">
+              <Option value="Growth">Growth</Option>
+              <Option value="Decline">Decline</Option>
+            </Select>
+          </Space>
+        }
+        style={{ marginTop: 20 }}
+      >
+        <div style={{ height: 300 }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={revenueData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <RechartsTooltip />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="revenue"
+                stroke="#52c41a"
+                strokeWidth={3}
+                dot={{ r: 3 }}
+                activeDot={{ r: 6 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </Card>
+
+      {/* TABLA DE TRANSACCIONES */}
+      <Card title="Transactions" style={{ marginTop: 20 }}>
+        <Table
+          columns={columnsTransacciones}
+          dataSource={dataTransacciones}
+          pagination={{ pageSize: 5 }}
+          rowKey="key"
+        />
+      </Card>
+
+      {/* GALERÍA DE IMÁGENES Y COMENTARIOS */}
+      <Row gutter={24} style={{ marginTop: 20 }}>
+        {/* Galería de Imágenes */}
+        <Col xs={24} md={12}>
+          <Card title="Project Gallery">
+            <Row gutter={16}>
+              {galleryImages.map((img) => (
+                <Col xs={12} key={img.id} style={{ marginBottom: 16 }}>
+                  <img
+                    src={img.url}
+                    alt={img.alt}
+                    style={{
+                      width: "100%",
+                      height: "auto",
+                      borderRadius: 8,
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+                    }}
+                  />
+                </Col>
+              ))}
+            </Row>
+            <Button type="dashed" icon={<CameraOutlined />}>
+              Agregar Nuevas Imágenes
+            </Button>
+          </Card>
+        </Col>
+
+        {/* Comentarios / Feedback */}
+        <Col xs={24} md={12}>
+          <Card title="Comments & Feedback">
+            <List
+              className="comment-list"
+              itemLayout="horizontal"
+              dataSource={feedbackComments}
+              renderItem={(item) => (
+                <List.Item>
+                  <List.Item.Meta
+                    avatar={<Avatar src={item.avatar} />}
+                    title={
+                      <Tooltip title={item.datetime}>
+                        <span>{item.author}</span>
+                      </Tooltip>
+                    }
+                    description={item.content}
+                  />
+                </List.Item>
+              )}
+            />
+            <Divider />
+            <Button type="primary">Ver Todos</Button>
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 };
 
-export default DashboardCreator;
+export default DashboardCreador;
