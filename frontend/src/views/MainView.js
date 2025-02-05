@@ -11,6 +11,8 @@ import { Permissions } from "../auth/Permissions";
 import DashboardAdmin from "../modules/Dashboard/DashboardAdmin";
 import DashboardCreator from "../modules/Dashboard/DashboardCreator";
 import DashboardUser from "../modules/Dashboard/DashboardUser";
+// Importar el nuevo Dashboard para soporte
+import DashboardSoporte from "../modules/Dashboard/DashboardSoporte";
 
 // Importar módulos para Proyectos
 import ProjectsAdmin from "../modules/Projects/ProjectsAdmin";
@@ -27,7 +29,6 @@ import ProjectCategories from "../modules/Projects/Submodules/ProjectCategory/Pr
 import ProjectTypes from "../modules/Projects/Submodules/ProjectType/ProjectTypes";
 
 // Importar módulo para Inversiones (para el rol usuario)
-// Asegúrate de que el archivo exista en la ruta indicada y tenga export default
 import Investments from "../modules/Inversiones/Inversiones";
 
 // Registrar los módulos disponibles (las claves deben coincidir EXACTAMENTE con los valores en Permissions)
@@ -35,6 +36,8 @@ const Modules = {
   DashboardAdmin,
   DashboardCreator,
   DashboardUser,
+  // Agregamos el dashboard para soporte
+  DashboardSoporte,
   Users,
   ProjectsAdmin,
   ProjectsCreator,
@@ -101,11 +104,7 @@ const MainView = () => {
             {userModules.map((module, index) => {
               const Component = Modules[module.component];
               return (
-                <Route
-                  key={index}
-                  path={module.path}
-                  element={<Component />}
-                />
+                <Route key={index} path={module.path} element={<Component />} />
               );
             })}
             {/* Rutas específicas para submódulos de Proyectos */}

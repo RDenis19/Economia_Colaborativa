@@ -27,6 +27,8 @@ export const Permissions = {
     { name: "Notificaciones", path: "/notifications", component: "Notifications" }
   ],
   soporte: [
+    // Agregamos el dashboard para soporte
+    { name: "Dashboard", path: "/dashboard", component: "DashboardSoporte" },
     { name: "Proyectos", path: "/projects", component: "ProjectsUser" },
     { name: "Tickets", path: "/tickets", component: "Tickets" },
     { name: "Notificaciones", path: "/notifications", component: "Notifications" }
