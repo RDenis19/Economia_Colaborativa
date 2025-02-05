@@ -30,6 +30,7 @@ function Sidebar({ links = [], onLogout }) {
     Usuarios: <UserOutlined />,
     Proyectos: <ProjectOutlined />,
     Tickets: <MessageOutlined />,
+    Inversiones: <ProjectOutlined />,
     Notificaciones: <NotificationOutlined />,
   };
 

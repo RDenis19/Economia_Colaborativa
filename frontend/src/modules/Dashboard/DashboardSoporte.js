@@ -9,18 +9,18 @@ import {
   Tag,
   Button,
   Divider,
-  List,
-  Avatar,
-  Tooltip,
   Space,
   Progress,
+  List,
+  Avatar
 } from "antd";
 import {
   CheckOutlined,
   CloseOutlined,
   PhoneOutlined,
   FileDoneOutlined,
-  BellOutlined,
+  FileTextOutlined,
+  DollarOutlined
 } from "@ant-design/icons";
 import {
   PieChart,
@@ -31,9 +31,43 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-// ======================
-// COMPONENTE PRINCIPAL
-// ======================
+// =================================================
+// Función para obtener ícono y color según el tipo
+// =================================================
+const getNotificationAvatar = (tipo) => {
+  switch (tipo) {
+    case "warning":
+      return {
+        icon: <FileTextOutlined />,
+        color: "#faad14",
+      };
+    case "success":
+      return {
+        icon: <DollarOutlined />,
+        color: "#52c41a",
+      };
+    case "info":
+      return {
+        icon: <FileDoneOutlined />,
+        color: "#1890ff",
+      };
+    default:
+      return {
+        icon: <FileDoneOutlined />,
+        color: "#1890ff",
+      };
+  }
+};
+
+// =================================================
+// Estilos básicos para Cards y List
+// =================================================
+const cardStyle = {
+  borderRadius: 8,
+  boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+  marginBottom: 20,
+};
+
 const DashboardSoporte = () => {
   // 1) PROYECTOS PENDIENTES DE VERIFICACIÓN
   const columnsVerificacion = [
@@ -90,20 +124,26 @@ const DashboardSoporte = () => {
     { title: "Ticket ID", dataIndex: "ticketId", key: "ticketId" },
     { title: "Usuario", dataIndex: "usuario", key: "usuario" },
     { title: "Asunto", dataIndex: "asunto", key: "asunto" },
-    { title: "Estado", dataIndex: "estado", key: "estado",
+    {
+      title: "Estado",
+      dataIndex: "estado",
+      key: "estado",
       render: (estado) => {
         let color = "green";
         if (estado === "Abierto") color = "volcano";
         if (estado === "En Proceso") color = "blue";
         return <Tag color={color}>{estado}</Tag>;
-      }
+      },
     },
-    { title: "Prioridad", dataIndex: "prioridad", key: "prioridad",
+    {
+      title: "Prioridad",
+      dataIndex: "prioridad",
+      key: "prioridad",
       render: (prioridad) => {
         let color = "geekblue";
         if (prioridad === "Alta") color = "red";
         return <Tag color={color}>{prioridad}</Tag>;
-      }
+      },
     },
     { title: "Creado", dataIndex: "fechaCreacion", key: "fechaCreacion" },
     {
@@ -183,7 +223,6 @@ const DashboardSoporte = () => {
   ]);
 
   // 4) GRÁFICA DE INCIDENCIAS (Distribución por categoría)
-  // Podrías tener incidencias: Pago, Documentación, Cuenta, Otros
   const dataIncidencias = [
     { name: "Pago", value: 40 },
     { name: "Documentación", value: 25 },
@@ -192,22 +231,23 @@ const DashboardSoporte = () => {
   ];
   const COLORS = ["#0088FE", "#FFBB28", "#FF8042", "#00C49F"];
 
-  // 5) NOTIFICACIONES
+  // 5) NOTIFICACIONES (ejemplo más resumido)
   const [notificaciones] = useState([
     {
       id: 1,
-      tipo: "warning",
-      mensaje: "Proyecto #123 reportado por 3 usuarios",
+      titulo: "Nuevo Proyecto Enviado",
+      tipo: "info",
+      mensaje:
+        "El proyecto 'Campaña de Agua Limpia' fue enviado para revisión por Juan Pérez.",
+      fecha: "04/02/2025 20:40",
     },
     {
       id: 2,
-      tipo: "info",
-      mensaje: "Límite de recaudación alcanzado en #245",
-    },
-    {
-      id: 3,
+      titulo: "Meta Alcanzada",
       tipo: "success",
-      mensaje: "Proyecto #202 verificado con éxito",
+      mensaje:
+        "El proyecto 'Tecnología para Todos' alcanzó el 100% de su meta de financiamiento.",
+      fecha: "04/02/2025 19:40",
     },
   ]);
 
@@ -225,25 +265,73 @@ const DashboardSoporte = () => {
   };
 
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: 20, background: "#f5f7fa" }}>
+      {/* NOTIFICACIONES (resumidas) */}
+      <Card
+        title={<strong>Notificaciones</strong>}
+        style={cardStyle}
+        bodyStyle={{ padding: 16 }}
+      >
+        <List
+          itemLayout="horizontal"
+          dataSource={notificaciones}
+          renderItem={(notif) => {
+            const { icon, color } = getNotificationAvatar(notif.tipo);
+            return (
+              <List.Item
+                style={{
+                  backgroundColor: "#fff",
+                  borderRadius: 4,
+                  marginBottom: 8,
+                  border: "1px solid #f0f0f0",
+                }}
+                actions={[
+                  <Button type="link" size="small">
+                    Ver
+                  </Button>,
+                  <Button type="link" size="small" danger>
+                    Eliminar
+                  </Button>,
+                ]}
+              >
+                <List.Item.Meta
+                  avatar={
+                    <Avatar style={{ backgroundColor: color, color: "#fff" }}>
+                      {icon}
+                    </Avatar>
+                  }
+                  title={<strong>{notif.titulo}</strong>}
+                  description={notif.mensaje}
+                />
+                <div style={{ fontSize: 12, color: "gray" }}>{notif.fecha}</div>
+              </List.Item>
+            );
+          }}
+        />
+      </Card>
 
       {/* PROYECTOS PENDIENTES DE VERIFICACIÓN */}
-      <Card title="Proyectos Pendientes de Verificación" style={{ marginBottom: 20 }}>
+      <Card
+        title={<strong>Proyectos Pendientes de Verificación</strong>}
+        style={cardStyle}
+      >
         <Table
           columns={columnsVerificacion}
           dataSource={proyectosPendientes}
           pagination={false}
           rowKey="key"
+          size="small"
         />
       </Card>
 
       {/* TICKETS DE SOPORTE */}
-      <Card title="Tickets de Soporte" style={{ marginBottom: 20 }}>
+      <Card title={<strong>Tickets de Soporte</strong>} style={cardStyle}>
         <Table
           columns={columnsTickets}
           dataSource={ticketsSoporte}
           pagination={{ pageSize: 4 }}
           rowKey="key"
+          size="small"
         />
       </Card>
 
@@ -252,29 +340,31 @@ const DashboardSoporte = () => {
         title={
           <Space>
             <PhoneOutlined />
-            Llamadas Recientes
+            <strong>Llamadas Recientes</strong>
           </Space>
         }
-        style={{ marginBottom: 20 }}
+        style={cardStyle}
       >
         <Table
           columns={columnsLlamadas}
           dataSource={llamadasSoporte}
           pagination={false}
           rowKey="key"
+          size="small"
         />
       </Card>
 
-      <Row gutter={24}>
+      <Row gutter={[24, 24]}>
         <Col xs={24} md={12}>
           {/* GRÁFICA: DISTRIBUCIÓN DE INCIDENCIAS */}
           <Card
             title={
               <Space>
                 <FileDoneOutlined />
-                Distribución de Incidencias
+                <strong>Distribución de Incidencias</strong>
               </Space>
             }
+            style={cardStyle}
           >
             <div style={{ width: "100%", height: 300 }}>
               <ResponsiveContainer>
@@ -305,7 +395,10 @@ const DashboardSoporte = () => {
 
         {/* INDICADOR DE PROGRESO (SIMULANDO SLA u OTRO MÉTRICA) */}
         <Col xs={24} md={12}>
-          <Card title="Indicador de Nivel de Servicio (SLA)">
+          <Card
+            title={<strong>Indicador de Nivel de Servicio (SLA)</strong>}
+            style={cardStyle}
+          >
             <p>
               <strong>Casos resueltos este mes:</strong> 75%
             </p>

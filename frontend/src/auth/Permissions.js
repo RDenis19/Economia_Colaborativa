@@ -3,9 +3,9 @@ export const Permissions = {
   administrador: [
     { name: "Dashboard", path: "/dashboard", component: "DashboardAdmin" },
     { name: "Usuarios", path: "/users", component: "Users" },
-    { 
-      name: "Proyectos", 
-      path: "/projects", 
+    {
+      name: "Proyectos",
+      path: "/projects",
       component: "ProjectsAdmin",
       subMenu: [
         { name: "Categorías", path: "/projects/categories", component: "ProjectCategories" },
@@ -27,9 +27,9 @@ export const Permissions = {
     { name: "Notificaciones", path: "/notifications", component: "Notifications" }
   ],
   soporte: [
-    // Agregamos el dashboard para soporte
     { name: "Dashboard", path: "/dashboard", component: "DashboardSoporte" },
-    { name: "Proyectos", path: "/projects", component: "ProjectsUser" },
+    // Cambiar a ProjectsSoporte para soporte:
+    { name: "Proyectos", path: "/projects", component: "ProjectsSoporte" },
     { name: "Tickets", path: "/tickets", component: "Tickets" },
     { name: "Notificaciones", path: "/notifications", component: "Notifications" }
   ],

@@ -18,7 +18,7 @@ import DashboardSoporte from "../modules/Dashboard/DashboardSoporte";
 import ProjectsAdmin from "../modules/Projects/ProjectsAdmin";
 import ProjectsCreator from "../modules/Projects/ProjectsCreator";
 import ProjectsUser from "../modules/Projects/ProjectsUser";
-
+import ProjectsSoporte from "../modules/Projects/ProjectsSoporte"; 
 // Importar otros módulos
 import Users from "../modules/Users/Users";
 import Tickets from "../modules/Tickets/Tickets";
@@ -31,25 +31,25 @@ import ProjectTypes from "../modules/Projects/Submodules/ProjectType/ProjectType
 // Importar módulo para Inversiones (para el rol usuario)
 import Investments from "../modules/Inversiones/Inversiones";
 
+const { Content } = Layout;
+
 // Registrar los módulos disponibles (las claves deben coincidir EXACTAMENTE con los valores en Permissions)
 const Modules = {
   DashboardAdmin,
   DashboardCreator,
   DashboardUser,
-  // Agregamos el dashboard para soporte
   DashboardSoporte,
   Users,
   ProjectsAdmin,
   ProjectsCreator,
   ProjectsUser,
+  ProjectsSoporte, 
   Tickets,
   Notifications,
   ProjectCategories,
   ProjectTypes,
   Investments,
 };
-
-const { Content } = Layout;
 
 const MainView = () => {
   const { roles } = useContext(AuthContext);
