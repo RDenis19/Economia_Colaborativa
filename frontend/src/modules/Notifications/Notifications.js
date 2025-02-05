@@ -1,10 +1,30 @@
 // NotificationsCenter.js
 import React, { useState, useEffect } from "react";
 import {
-  Layout,Card,List,Drawer,Button,Input,Tabs,Checkbox,Row,Col,Typography,message,Modal,Divider,
+  Layout,
+  Card,
+  List,
+  Drawer,
+  Button,
+  Input,
+  Tabs,
+  Checkbox,
+  Row,
+  Col,
+  Typography,
+  message,
+  Modal,
+  Divider,
 } from "antd";
 import {
-  BellOutlined,DollarCircleOutlined,FileOutlined,ExclamationCircleOutlined,UserOutlined,StarOutlined,StarFilled,DeleteOutlined,
+  BellOutlined,
+  DollarCircleOutlined,
+  FileOutlined,
+  ExclamationCircleOutlined,
+  UserOutlined,
+  StarOutlined,
+  StarFilled,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
 
@@ -13,50 +33,50 @@ const { Title, Text } = Typography;
 const { Search } = Input;
 const { TabPane } = Tabs;
 
-const NotificationsCenter = () => {
-  // Datos de ejemplo para las notificaciones
-  const initialNotifications = [
-    {
-      id: 1,
-      type: "Proyecto",
-      title: "Nuevo Proyecto Enviado",
-      description:
-        "El proyecto 'Campaña de Agua Limpia' fue enviado para revisión por Juan Pérez.",
-      timestamp: new Date().toISOString(),
-      read: false,
-      important: false,
-    },
-    {
-      id: 2,
-      type: "Financiero",
-      title: "Meta Alcanzada",
-      description:
-        "El proyecto 'Tecnología para Todos' alcanzó el 100% de su meta de financiamiento.",
-      timestamp: new Date(new Date().getTime() - 3600000).toISOString(),
-      read: false,
-      important: false,
-    },
-    {
-      id: 3,
-      type: "Usuario",
-      title: "Nuevo Registro de Usuario",
-      description: "La usuaria María López se ha registrado en la plataforma.",
-      timestamp: new Date(new Date().getTime() - 7200000).toISOString(),
-      read: true,
-      important: false,
-    },
-    {
-      id: 4,
-      type: "Seguridad",
-      title: "Alerta de Seguridad",
-      description:
-        "Se detectó actividad sospechosa en la cuenta de UsuarioXYZ. Se recomienda revisar el acceso.",
-      timestamp: new Date(new Date().getTime() - 10800000).toISOString(),
-      read: false,
-      important: false,
-    },
-  ];
+// Datos de ejemplo para las notificaciones (definido fuera del componente)
+const initialNotifications = [
+  {
+    id: 1,
+    type: "Proyecto",
+    title: "Nuevo Proyecto Enviado",
+    description:
+      "El proyecto 'Campaña de Agua Limpia' fue enviado para revisión por Juan Pérez.",
+    timestamp: new Date().toISOString(),
+    read: false,
+    important: false,
+  },
+  {
+    id: 2,
+    type: "Financiero",
+    title: "Meta Alcanzada",
+    description:
+      "El proyecto 'Tecnología para Todos' alcanzó el 100% de su meta de financiamiento.",
+    timestamp: new Date(new Date().getTime() - 3600000).toISOString(),
+    read: false,
+    important: false,
+  },
+  {
+    id: 3,
+    type: "Usuario",
+    title: "Nuevo Registro de Usuario",
+    description: "La usuaria María López se ha registrado en la plataforma.",
+    timestamp: new Date(new Date().getTime() - 7200000).toISOString(),
+    read: true,
+    important: false,
+  },
+  {
+    id: 4,
+    type: "Seguridad",
+    title: "Alerta de Seguridad",
+    description:
+      "Se detectó actividad sospechosa en la cuenta de UsuarioXYZ. Se recomienda revisar el acceso.",
+    timestamp: new Date(new Date().getTime() - 10800000).toISOString(),
+    read: false,
+    important: false,
+  },
+];
 
+const NotificationsCenter = () => {
   // Estados principales
   const [notifications, setNotifications] = useState([]);
   const [filteredNotifications, setFilteredNotifications] = useState([]);
@@ -283,9 +303,7 @@ const NotificationsCenter = () => {
                     />
                   </Col>
                   {/* Avatar */}
-                  <Col>
-                    {getAvatarForType(item.type)}
-                  </Col>
+                  <Col>{getAvatarForType(item.type)}</Col>
                   {/* Información */}
                   <Col flex="auto">
                     <Row justify="space-between">
